@@ -1,0 +1,21 @@
+[package]
+name = "harvest"
+version = "0.1.0"
+description = "Weekly covered call vaults for tokenized equities on Solana"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "harvest"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+
+[dependencies]
+anchor-lang = "0.29.0"
+anchor-spl = { version = "0.29.0", features = ["token_2022", "token"] }
+spl-token-2022 = { version = "0.9.0", features = ["no-entrypoint"] }
