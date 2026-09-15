@@ -1,0 +1,25 @@
+
+# Rust / Anchor
+.anchor
+target
+**/*.rs.bk
+test-ledger
+
+# Node / Next.js
+node_modules
+.yarn
+.next
+out
+
+# Env files — never commit secrets
+.env
+.env.local
+.env*.local
+
+# Editor
+.DS_Store
+.vscode
+*.swp
+
+# Solana keypairs — never commit
+**/*-keypair.json

@@ -1,0 +1,21 @@
+[toolchain]
+
+[features]
+seeds = true
+skip-lint = false
+
+[programs.devnet]
+harvest = "34Y7acmqWosmkfPJjqRUQzrHFdxmxpQezLSvgD9bLJJo"
+
+[programs.localnet]
+harvest = "34Y7acmqWosmkfPJjqRUQzrHFdxmxpQezLSvgD9bLJJo"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "devnet"
+wallet = "/home/lala_02/.config/solana/id.json"
+
+[scripts]
+test = "yarn run mocha -t 1000000 tests/"
