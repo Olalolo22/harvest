@@ -34,8 +34,8 @@ export default function Home() {
           <div className={styles.trustRow}><span>Powered by</span><strong>Solana</strong><span className={styles.trustDivider} /> <span>Prices by</span><strong className={styles.pyth}>Pyth</strong></div>
         </div>
         <div className={styles.heroVisual} aria-label="Harvest vault cycle preview">
-          <div className={styles.orbit orbitOne} />
-          <div className={styles.orbit orbitTwo} />
+          <div className={`${styles.orbit} ${styles.orbitOne}`} />
+          <div className={`${styles.orbit} ${styles.orbitTwo}`} />
           <div className={styles.yieldCard}>
             <div className={styles.cardTop}><span className={styles.cardLabel}>THIS WEEK&apos;S HARVEST</span><span className={styles.statusPill}>LIVE</span></div>
             <div className={styles.yieldAmount}>+$42.80</div>
@@ -43,9 +43,9 @@ export default function Home() {
             <div className={styles.progressTrack}><span /></div>
             <div className={styles.cardBottom}><span>Cycle ends in</span><strong>4d 12h</strong></div>
           </div>
-          <div className={styles.floatingToken tokenOne}><span className={styles.tokenIcon}>N</span><div><strong>xNVDA</strong><small>$182.40</small></div></div>
-          <div className={styles.floatingToken tokenTwo}><span className={styles.tokenIcon}>A</span><div><strong>xAAPL</strong><small>$228.71</small></div></div>
-          <div className={styles.floatingToken tokenThree}><span className={styles.tokenIcon}>T</span><div><strong>xTSLA</strong><small>$441.62</small></div></div>
+          <div className={`${styles.floatingToken} ${styles.tokenOne}`}><span className={styles.tokenIcon}>N</span><div><strong>xNVDA</strong><small>$182.40</small></div></div>
+          <div className={`${styles.floatingToken} ${styles.tokenTwo}`}><span className={styles.tokenIcon}>A</span><div><strong>xAAPL</strong><small>$228.71</small></div></div>
+          <div className={`${styles.floatingToken} ${styles.tokenThree}`}><span className={styles.tokenIcon}>T</span><div><strong>xTSLA</strong><small>$441.62</small></div></div>
         </div>
       </section>
 
