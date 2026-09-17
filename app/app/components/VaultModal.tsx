@@ -57,8 +57,8 @@ export default function VaultModal({ vault, onClose }: VaultModalProps) {
       // Simulate confirmation for demo interaction
       await new Promise((r) => setTimeout(r, 1200));
       setTxSignature("4iGLKidV77gMkrAV6dbNZcUfkCEunNyiNcpwLTxjX4qaEWf2iHzPMd4rdq8nLdn6EiD8bfwDE174FuZfwrU81e2C");
-    } catch (e: any) {
-      setErrorMsg(e?.message ?? "Transaction failed");
+    } catch (e: unknown) {
+      setErrorMsg(e instanceof Error ? e.message : "Transaction failed");
     } finally {
       setLoading(false);
     }
@@ -77,8 +77,8 @@ export default function VaultModal({ vault, onClose }: VaultModalProps) {
     try {
       await new Promise((r) => setTimeout(r, 1200));
       setTxSignature("5tTm8F5UiytsAJWzHwtdpP4raMkEVhatZgwD75s3frZRFdZGgsos7JKMTnbPBALKDFbo9aEdggfNrVrCxpias9rC");
-    } catch (e: any) {
-      setErrorMsg(e?.message ?? "Claim failed");
+    } catch (e: unknown) {
+      setErrorMsg(e instanceof Error ? e.message : "Claim failed");
     } finally {
       setLoading(false);
     }

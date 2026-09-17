@@ -6,11 +6,6 @@ import {
   WalletProvider,
 } from "@solana/wallet-adapter-react";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-import {
-  PhantomWalletAdapter,
-  SolflareWalletAdapter,
-} from "@solana/wallet-adapter-wallets";
-
 // Import Wallet Adapter CSS
 import "@solana/wallet-adapter-react-ui/styles.css";
 
@@ -25,10 +20,8 @@ export default function SolanaWalletProvider({
     []
   );
 
-  const wallets = useMemo(
-    () => [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
-    []
-  );
+  // Wallets supporting the Solana Wallet Standard (Phantom, Solflare, Backpack) are auto-detected
+  const wallets = useMemo(() => [], []);
 
   return (
     <ConnectionProvider endpoint={endpoint}>
