@@ -13,39 +13,46 @@ pub fn handler(ctx: Context<Deposit>, amount: u64) -> Result<()> {
     require!(amount >= MIN_DEPOSIT_AMOUNT, HarvestError::DepositBelowMinimum);
     require!(amount > 0, HarvestError::ZeroDepositAmount);
 
-    let vault = &mut ctx.accounts.vault_config;
-    require!(
-        vault.cycle_state == CycleState::AcceptingDeposits,
-        HarvestError::VaultNotAcceptingDeposits
-    );
+    // Read the values we need from vault before taking a mutable borrow.
+    let vault_key = ctx.accounts.vault_config.key();
+    let vault_decimals = ctx.accounts.vault_config.xstock_decimals;
+    let vault_current_cycle;
+    {
+        let vault = &mut ctx.accounts.vault_config;
+        require!(
+            vault.cycle_state == CycleState::AcceptingDeposits,
+            HarvestError::VaultNotAcceptingDeposits
+        );
 
-    // Transfer xStock from user → vault using Token-2022 transfer_checked.
-    // transfer_checked is REQUIRED for Token-2022 mints (not transfer).
-    let cpi_accounts = TransferChecked {
-        from: ctx.accounts.user_xstock_ata.to_account_info(),
-        mint: ctx.accounts.xstock_mint.to_account_info(),
-        to: ctx.accounts.vault_xstock_ata.to_account_info(),
-        authority: ctx.accounts.owner.to_account_info(),
-    };
-    let cpi_ctx = CpiContext::new(ctx.accounts.token_program.to_account_info(), cpi_accounts);
-    token_interface::transfer_checked(cpi_ctx, amount, vault.xstock_decimals)?;
+        // Transfer xStock from user → vault using Token-2022 transfer_checked.
+        // transfer_checked is REQUIRED for Token-2022 mints (not transfer).
+        let cpi_accounts = TransferChecked {
+            from: ctx.accounts.user_xstock_ata.to_account_info(),
+            mint: ctx.accounts.xstock_mint.to_account_info(),
+            to: ctx.accounts.vault_xstock_ata.to_account_info(),
+            authority: ctx.accounts.owner.to_account_info(),
+        };
+        let cpi_ctx = CpiContext::new(ctx.accounts.token_program.to_account_info(), cpi_accounts);
+        token_interface::transfer_checked(cpi_ctx, amount, vault_decimals)?;
 
-    // Update vault totals.
-    vault.total_xstock_deposited = vault
-        .total_xstock_deposited
-        .checked_add(amount)
-        .ok_or(error!(HarvestError::MathOverflow))?;
-    vault.pending_claims = vault
-        .pending_claims
-        .checked_add(1)
-        .ok_or(error!(HarvestError::MathOverflow))?;
+        // Update vault totals.
+        vault.total_xstock_deposited = vault
+            .total_xstock_deposited
+            .checked_add(amount)
+            .ok_or(error!(HarvestError::MathOverflow))?;
+        vault.pending_claims = vault
+            .pending_claims
+            .checked_add(1)
+            .ok_or(error!(HarvestError::MathOverflow))?;
+        vault_current_cycle = vault.current_cycle;
+    }
 
-    // Initialise the user position.
+    // Initialise the user position (vault borrow has ended above).
     let position = &mut ctx.accounts.user_position;
     let clock = Clock::get()?;
     position.owner = ctx.accounts.owner.key();
-    position.vault = ctx.accounts.vault_config.key();
-    position.cycle = vault.current_cycle;
+    position.vault = vault_key;
+    position.cycle = vault_current_cycle;
     position.xstock_amount = amount;
     position.deposit_value_usd = 0; // Set at lock_cycle by keeper
     position.state = PositionState::Active;
