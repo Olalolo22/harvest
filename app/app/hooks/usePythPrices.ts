@@ -114,7 +114,7 @@ export function usePythPrices(): PythPricesState {
       } catch {
         if (isMounted) {
           // If Hermes is blocked by browser CORS or slow network, fallback smoothly
-          setPrices((prev) => ({
+          setPrices((prev: PythPricesState) => ({
             ...prev,
             oracleStatus: "LIVE",
           }));

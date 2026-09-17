@@ -20,13 +20,23 @@ export default function VaultModal({ vault, onClose, onOpenFaucet }: VaultModalP
   const [txSignature, setTxSignature] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  type StrikeProfile = "conservative" | "balanced" | "aggressive";
+  const [strikeProfile, setStrikeProfile] = useState<StrikeProfile>("balanced");
+
   if (!vault) return null;
 
   const numericAmount = parseFloat(amount) || 0;
-  const numericPrice = parseFloat(vault.price.replace("$", "")) || 200;
-  const estimatedUsdValue = numericAmount * numericPrice;
-  // ~1.5% weekly premium simulation
-  const estimatedPremiumUsdc = (estimatedUsdValue * 0.015).toFixed(2);
+  const currentNumericPrice = parseFloat(vault.price.replace("$", "")) || 200;
+  const estimatedUsdValue = numericAmount * currentNumericPrice;
+
+  const strikeMultiplier =
+    strikeProfile === "conservative" ? 1.04 : strikeProfile === "balanced" ? 1.08 : 1.12;
+  const dynamicStrike = `$${(currentNumericPrice * strikeMultiplier).toFixed(2)}`;
+  const dynamicPremiumPct =
+    strikeProfile === "conservative" ? "5.2%" : strikeProfile === "balanced" ? "8.4%" : "12.1%";
+  const weeklyYieldRate =
+    strikeProfile === "conservative" ? 0.052 : strikeProfile === "balanced" ? 0.084 : 0.121;
+  const estimatedPremiumUsdc = (estimatedUsdValue * (weeklyYieldRate * 0.2)).toFixed(2);
 
   const handleDeposit = async () => {
     if (!connected || !publicKey) {
@@ -203,7 +213,7 @@ export default function VaultModal({ vault, onClose, onOpenFaucet }: VaultModalP
               LOCKED STRIKE
             </div>
             <strong style={{ fontSize: "16px", color: "var(--accent-gold)" }}>
-              {vault.strike}
+              {dynamicStrike}
             </strong>
           </div>
           <div>
@@ -219,7 +229,7 @@ export default function VaultModal({ vault, onClose, onOpenFaucet }: VaultModalP
               EST. WEEKLY PREMIUM
             </div>
             <strong style={{ fontSize: "15px", color: "var(--text-primary)" }}>
-              +{vault.premium}
+              +{dynamicPremiumPct}
             </strong>
           </div>
           <div>
@@ -298,6 +308,78 @@ export default function VaultModal({ vault, onClose, onOpenFaucet }: VaultModalP
         {/* Tab Content: Deposit */}
         {tab === "deposit" ? (
           <div>
+            {/* Strike & Risk Profile Selector */}
+            <div style={{ marginBottom: "20px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "11px",
+                  letterSpacing: "0.08em",
+                  color: "var(--text-secondary)",
+                  textTransform: "uppercase",
+                  marginBottom: "8px",
+                }}
+              >
+                <span>Strike Risk Profile</span>
+                <span style={{ color: "var(--accent-gold)", fontWeight: 600, textTransform: "none", fontSize: "11px" }}>
+                  {strikeProfile === "conservative"
+                    ? "Conservative (+4% OTM)"
+                    : strikeProfile === "balanced"
+                    ? "Balanced (+8% OTM)"
+                    : "Aggressive (+12% OTM)"}
+                </span>
+              </div>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr 1fr",
+                  gap: "8px",
+                }}
+              >
+                {[
+                  { id: "conservative" as const, name: "Conservative", otm: "+4% OTM", yield: "~5.2%" },
+                  { id: "balanced" as const, name: "Balanced", otm: "+8% OTM", yield: "~8.4%" },
+                  { id: "aggressive" as const, name: "Aggressive", otm: "+12% OTM", yield: "~12.1%" },
+                ].map((item) => {
+                  const isSelected = strikeProfile === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setStrikeProfile(item.id)}
+                      style={{
+                        padding: "10px 8px",
+                        borderRadius: "10px",
+                        border: isSelected ? "1.5px solid var(--text-primary)" : "1px solid var(--border-subtle)",
+                        backgroundColor: isSelected ? "var(--bg-primary)" : "#FFFFFF",
+                        cursor: "pointer",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        textAlign: "center",
+                        gap: "2px",
+                        transition: "all 0.15s ease",
+                      }}
+                    >
+                      <span style={{ fontSize: "12px", fontWeight: isSelected ? 700 : 600, color: "var(--text-primary)" }}>
+                        {item.name}
+                      </span>
+                      <span style={{ fontFamily: "var(--font-mono)", fontSize: "10px", color: "var(--text-muted)" }}>
+                        {item.otm}
+                      </span>
+                      <span style={{ fontFamily: "var(--font-mono)", fontSize: "11px", fontWeight: 700, color: "var(--accent-green)", marginTop: "2px" }}>
+                        {item.yield}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             <div style={{ marginBottom: "20px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "8px" }}>
                 <label
