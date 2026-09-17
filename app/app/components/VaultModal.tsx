@@ -111,7 +111,7 @@ export default function VaultModal({ vault, onClose }: VaultModalProps) {
           fontFamily: "'Manrope', sans-serif",
           color: "#1c2b24",
         }}
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e: React.MouseEvent) => e.stopPropagation()}
       >
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
@@ -264,7 +264,7 @@ export default function VaultModal({ vault, onClose }: VaultModalProps) {
                   min="1"
                   step="0.1"
                   value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAmount(e.target.value)}
                   style={{
                     border: "none",
                     outline: "none",

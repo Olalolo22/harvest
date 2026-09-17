@@ -1,11 +1,16 @@
 {
     "scripts": {
+        "dev": "npm --prefix app run dev",
+        "build": "npm --prefix app run build",
         "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",
         "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check"
     },
     "dependencies": {
         "@coral-xyz/anchor": "^0.29.0",
-        "@solana/spl-token": "^0.4.15"
+        "@solana/spl-token": "^0.4.15",
+        "next": "14.2.35",
+        "react": "^18",
+        "react-dom": "^18"
     },
     "devDependencies": {
         "chai": "^4.3.4",
