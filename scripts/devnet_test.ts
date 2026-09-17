@@ -31,6 +31,7 @@ import {
   TOKEN_PROGRAM_ID,
   getAccount,
   createMint,
+  createTransferCheckedInstruction,
 } from "@solana/spl-token";
 import fs from "fs";
 import path from "path";
@@ -222,12 +223,32 @@ async function main() {
   // STEP 4: Seed USDC reserve
   // ──────────────────────────────────────────────────────────────────────────
   log("\n─── STEP 4: Seed USDC Reserve ───");
-  const vaultUsdcInfo = await getAccount(connection, vaultUsdcAta.address, "confirmed", TOKEN_PROGRAM_ID);
+  let vaultUsdcInfo = await getAccount(connection, vaultUsdcAta.address, "confirmed", TOKEN_PROGRAM_ID);
   log(`Vault USDC balance: ${Number(vaultUsdcInfo.amount) / 1e6} USDC`);
   if (vaultUsdcInfo.amount < RESERVE_USDC) {
-    log("Balance below 100 USDC — run fund_reserve.ts first.");
-    log(`  XSTOCK_MINT=${xstockMint.toBase58()} USDC_AMOUNT=100 npx ts-node scripts/fund_reserve.ts`);
-    log("Continuing test (claim step may fail without reserve)...");
+    log(`Vault reserve below ${Number(RESERVE_USDC) / 1e6} USDC — seeding from authority...`);
+    const authorityUsdcAta = await getOrCreateAssociatedTokenAccount(
+      connection, authority, DEVNET_USDC_MINT, authority.publicKey, false, "confirmed", {}, TOKEN_PROGRAM_ID
+    );
+    const transferIx = createTransferCheckedInstruction(
+      authorityUsdcAta.address,
+      DEVNET_USDC_MINT,
+      vaultUsdcAta.address,
+      authority.publicKey,
+      RESERVE_USDC,
+      6,
+      [],
+      TOKEN_PROGRAM_ID
+    );
+    const { blockhash } = await connection.getLatestBlockhash("confirmed");
+    const tx = new anchor.web3.Transaction();
+    tx.recentBlockhash = blockhash;
+    tx.feePayer = authority.publicKey;
+    tx.add(transferIx);
+    await anchor.web3.sendAndConfirmTransaction(connection, tx, [authority], { commitment: "confirmed" });
+    vaultUsdcInfo = await getAccount(connection, vaultUsdcAta.address, "confirmed", TOKEN_PROGRAM_ID);
+    log(`Vault USDC balance (after seeding): ${Number(vaultUsdcInfo.amount) / 1e6} USDC`);
+    pass("USDC reserve seeded");
   } else {
     pass("USDC reserve seeded");
   }
