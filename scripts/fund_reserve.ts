@@ -49,9 +49,9 @@ const PROGRAM_ID = new PublicKey(
   "34Y7acmqWosmkfPJjqRUQzrHFdxmxpQezLSvgD9bLJJo"
 );
 
-// Devnet USDC (Coinbase faucet mint)
+// Devnet USDC (Circle faucet mint: Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr)
 const DEVNET_USDC_MINT = new PublicKey(
-  "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
+  process.env.USDC_MINT ?? "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr"
 );
 
 const CLUSTER = process.env.CLUSTER ?? "devnet";

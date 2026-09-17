@@ -41,8 +41,9 @@ import path from "path";
 const PROGRAM_ID = new PublicKey(
   "34Y7acmqWosmkfPJjqRUQzrHFdxmxpQezLSvgD9bLJJo"
 );
+// Devnet USDC (Circle faucet mint: Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr)
 const DEVNET_USDC_MINT = new PublicKey(
-  "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
+  process.env.USDC_MINT ?? "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr"
 );
 const CLUSTER = "devnet";
 const RPC = "https://api.devnet.solana.com";
@@ -249,7 +250,7 @@ async function main() {
     log(`Minted ${DEPOSIT_AMOUNT * 10n} xStock to authority ATA`);
   }
 
-  const vaultState = await program.account.vaultConfig.fetch(vaultConfigPDA);
+  const vaultState: any = await program.account.vaultConfig.fetch(vaultConfigPDA);
   const currentCycle: anchor.BN = vaultState.currentCycle;
 
   const [userPositionPDA] = pda(
@@ -293,7 +294,7 @@ async function main() {
   // STEP 6: Lock cycle
   // ──────────────────────────────────────────────────────────────────────────
   log("\n─── STEP 6: Lock Cycle ───");
-  const vaultStateAfterDeposit = await program.account.vaultConfig.fetch(vaultConfigPDA);
+  const vaultStateAfterDeposit: any = await program.account.vaultConfig.fetch(vaultConfigPDA);
   const cycleStateName = Object.keys(vaultStateAfterDeposit.cycleState)[0];
   log(`Current cycle state: ${cycleStateName}`);
 
@@ -320,7 +321,7 @@ async function main() {
   // STEP 7: Wait for settle window, then settle OTM
   // ──────────────────────────────────────────────────────────────────────────
   log("\n─── STEP 7: Settle OTM ───");
-  const vaultAfterLock = await program.account.vaultConfig.fetch(vaultConfigPDA);
+  const vaultAfterLock: any = await program.account.vaultConfig.fetch(vaultConfigPDA);
   const settleAfter: anchor.BN = vaultAfterLock.settleAfter;
   const now = Math.floor(Date.now() / 1000);
   const waitSecs = Math.max(0, settleAfter.toNumber() - now + 2);
@@ -330,7 +331,7 @@ async function main() {
     await sleep(waitSecs * 1000);
   }
 
-  const vaultStatePreSettle = await program.account.vaultConfig.fetch(vaultConfigPDA);
+  const vaultStatePreSettle: any = await program.account.vaultConfig.fetch(vaultConfigPDA);
   const preSettleState = Object.keys(vaultStatePreSettle.cycleState)[0];
 
   if (preSettleState === "settled") {
@@ -361,7 +362,7 @@ async function main() {
     connection, authority, DEVNET_USDC_MINT, authority.publicKey, false, "confirmed", {}, TOKEN_PROGRAM_ID
   );
 
-  const positionState = await program.account.userPosition.fetch(userPositionPDA);
+  const positionState: any = await program.account.userPosition.fetch(userPositionPDA);
   const posStateName = Object.keys(positionState.state)[0];
   log(`Position state: ${posStateName}`);
 
@@ -396,8 +397,8 @@ async function main() {
   // STEP 9: Final state check
   // ──────────────────────────────────────────────────────────────────────────
   log("\n─── STEP 9: Final State ───");
-  const finalVault = await program.account.vaultConfig.fetch(vaultConfigPDA);
-  const finalPosition = await program.account.userPosition.fetch(userPositionPDA);
+  const finalVault: any = await program.account.vaultConfig.fetch(vaultConfigPDA);
+  const finalPosition: any = await program.account.userPosition.fetch(userPositionPDA);
   const finalUsdcAta = await getAccount(connection, userUsdcAta.address, "confirmed", TOKEN_PROGRAM_ID);
 
   console.log(`\n  Vault state         : ${Object.keys(finalVault.cycleState)[0]}`);
