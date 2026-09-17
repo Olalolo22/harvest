@@ -1,7 +1,7 @@
 {
     "scripts": {
         "dev": "npm --prefix app run dev",
-        "build": "npm --prefix app run build",
+        "build": "npm --prefix app run build && (cp -r app/out public 2>/dev/null || true)",
         "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",
         "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check"
     },

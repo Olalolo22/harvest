@@ -10,6 +10,7 @@ node_modules
 .yarn
 .next
 out
+public
 
 # Env files — never commit secrets
 .env
