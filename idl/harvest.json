@@ -6,15 +6,15 @@
       "name": "initialize",
       "accounts": [
         { "name": "authority", "isMut": true, "isSigner": true },
-        { "name": "vaultConfig", "isMut": true, "isSigner": false },
         { "name": "xstockMint", "isMut": false, "isSigner": false },
         { "name": "usdcMint", "isMut": false, "isSigner": false },
-        { "name": "vaultXstockAta", "isMut": true, "isSigner": false },
-        { "name": "vaultUsdcAta", "isMut": true, "isSigner": false },
+        { "name": "vaultConfig", "isMut": true, "isSigner": false },
+        { "name": "vaultXstockAta", "isMut": false, "isSigner": false },
+        { "name": "vaultUsdcAta", "isMut": false, "isSigner": false },
         { "name": "tokenProgram", "isMut": false, "isSigner": false },
-        { "name": "tokenProgram2022", "isMut": false, "isSigner": false },
-        { "name": "associatedTokenProgram", "isMut": false, "isSigner": false },
-        { "name": "systemProgram", "isMut": false, "isSigner": false }
+        { "name": "tokenProgramClassic", "isMut": false, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false },
+        { "name": "rent", "isMut": false, "isSigner": false }
       ],
       "args": [
         { "name": "ticker", "type": { "array": ["u8", 8] } },
@@ -62,11 +62,10 @@
     {
       "name": "settleItm",
       "accounts": [
-        { "name": "authority", "isMut": false, "isSigner": true },
+        { "name": "authority", "isMut": true, "isSigner": true },
         { "name": "vaultConfig", "isMut": true, "isSigner": false },
         { "name": "keeperUsdcAta", "isMut": true, "isSigner": false },
         { "name": "vaultUsdcAta", "isMut": true, "isSigner": false },
-        { "name": "usdcMint", "isMut": false, "isSigner": false },
         { "name": "tokenProgram", "isMut": false, "isSigner": false }
       ],
       "args": [

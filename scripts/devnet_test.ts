@@ -201,15 +201,15 @@ async function main() {
         )
         .accounts({
           authority: authority.publicKey,
-          vaultConfig: vaultConfigPDA,
           xstockMint,
           usdcMint: DEVNET_USDC_MINT,
+          vaultConfig: vaultConfigPDA,
           vaultXstockAta: vaultXstockAta.address,
           vaultUsdcAta: vaultUsdcAta.address,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          tokenProgram2022: TOKEN_2022_PROGRAM_ID,
-          associatedTokenProgram: anchor.utils.token.ASSOCIATED_PROGRAM_ID,
+          tokenProgram: TOKEN_2022_PROGRAM_ID,
+          tokenProgramClassic: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         })
         .rpc();
       log(`initialize tx: ${tx}`);

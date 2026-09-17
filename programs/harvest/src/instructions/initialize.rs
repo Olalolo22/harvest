@@ -93,8 +93,6 @@ pub struct Initialize<'info> {
 
     /// Vault's Token-2022 ATA for xStock. Holds deposited tokens during cycle.
     #[account(
-        init,
-        payer = authority,
         token::mint = xstock_mint,
         token::authority = vault_config,
         token::token_program = token_program,
@@ -103,8 +101,6 @@ pub struct Initialize<'info> {
 
     /// Vault's USDC ATA. Admin must fund this with the premium reserve.
     #[account(
-        init,
-        payer = authority,
         token::mint = usdc_mint,
         token::authority = vault_config,
     )]
