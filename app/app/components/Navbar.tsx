@@ -4,7 +4,11 @@ import React, { useState, useEffect } from "react";
 import styles from "../design-v2.module.css";
 import ConnectWalletButton from "./ConnectWalletButton";
 
-export default function Navbar() {
+interface NavbarProps {
+  onOpenPortfolio?: () => void;
+}
+
+export default function Navbar({ onOpenPortfolio }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -46,6 +50,42 @@ export default function Navbar() {
           </div>
 
           <div className={styles.navActions}>
+            {onOpenPortfolio && (
+              <button
+                type="button"
+                onClick={onOpenPortfolio}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  height: "42px",
+                  padding: "0 16px",
+                  borderRadius: "999px",
+                  border: "1px solid var(--border-subtle)",
+                  backgroundColor: "rgba(20, 20, 20, 0.03)",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  color: "var(--text-primary)",
+                  transition: "background-color 0.15s ease",
+                }}
+                title="View active vault positions"
+              >
+                <span>Portfolio</span>
+                <span
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "10px",
+                    background: "var(--accent-gold-soft)",
+                    color: "var(--accent-gold)",
+                    padding: "1px 6px",
+                    borderRadius: "999px",
+                  }}
+                >
+                  2
+                </span>
+              </button>
+            )}
             <ConnectWalletButton />
           </div>
         </nav>

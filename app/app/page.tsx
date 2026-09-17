@@ -15,6 +15,7 @@ import RiskSection from "./components/RiskSection";
 import FinalCTA from "./components/FinalCTA";
 import Footer from "./components/Footer";
 import VaultModal from "./components/VaultModal";
+import PortfolioDrawer from "./components/PortfolioDrawer";
 
 const vaults: VaultItem[] = [
   {
@@ -54,11 +55,12 @@ const vaults: VaultItem[] = [
 
 export default function Home() {
   const [selectedVault, setSelectedVault] = useState<VaultItem | null>(null);
+  const [isPortfolioOpen, setIsPortfolioOpen] = useState<boolean>(false);
 
   return (
     <main className={styles.shell}>
       {/* 1. Minimal Sticky Navigation */}
-      <Navbar />
+      <Navbar onOpenPortfolio={() => setIsPortfolioOpen(true)} />
 
       {/* 2. Hero: Headline + Large Vault Card Object */}
       <Hero
@@ -106,6 +108,12 @@ export default function Home() {
           onClose={() => setSelectedVault(null)}
         />
       )}
+
+      {/* Slide-over Portfolio Drawer */}
+      <PortfolioDrawer
+        isOpen={isPortfolioOpen}
+        onClose={() => setIsPortfolioOpen(false)}
+      />
     </main>
   );
 }
