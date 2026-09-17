@@ -12,6 +12,7 @@ import StrategySection from "./components/StrategySection";
 import WhyHarvest from "./components/WhyHarvest";
 import Infrastructure from "./components/Infrastructure";
 import RiskSection from "./components/RiskSection";
+import KeeperStatusSection from "./components/KeeperStatusSection";
 import FinalCTA from "./components/FinalCTA";
 import Footer from "./components/Footer";
 import VaultModal from "./components/VaultModal";
@@ -92,6 +93,9 @@ export default function Home() {
 
       {/* 7 & 8. Strategy Explanation & Interactive Payoff Visualizer (Dark Contrast) */}
       <StrategySection />
+
+      {/* Autonomous Keeper & Historical Settlement Ledger */}
+      <KeeperStatusSection />
 
       {/* 9. Why Harvest: Weekly · Non-custodial · Transparent */}
       <WhyHarvest />

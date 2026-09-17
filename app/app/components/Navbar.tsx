@@ -45,6 +45,9 @@ export default function Navbar({ onOpenPortfolio, onOpenFaucet }: NavbarProps) {
             <a href="#strategy" className={styles.navLink}>
               Strategy
             </a>
+            <a href="#settlement-history" className={styles.navLink}>
+              Crank &amp; Cycles
+            </a>
             <a href="#risks" className={styles.navLink}>
               Risks
             </a>
