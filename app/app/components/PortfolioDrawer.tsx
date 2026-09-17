@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 
@@ -54,6 +54,15 @@ export default function PortfolioDrawer({ isOpen, onClose }: PortfolioDrawerProp
   const [claiming, setClaiming] = useState<string | null>(null);
   const [claimedNotice, setClaimedNotice] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const originalStyle = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const totalDepositedUsd = positions.reduce(
@@ -89,6 +98,7 @@ export default function PortfolioDrawer({ isOpen, onClose }: PortfolioDrawerProp
         zIndex: 1000,
         display: "flex",
         justifyContent: "flex-end",
+        overflow: "hidden",
       }}
       onClick={onClose}
     >
@@ -96,14 +106,17 @@ export default function PortfolioDrawer({ isOpen, onClose }: PortfolioDrawerProp
         style={{
           width: "100%",
           maxWidth: "490px",
-          height: "100%",
+          height: "100dvh",
+          maxHeight: "100dvh",
           backgroundColor: "#FFFFFF",
           borderLeft: "1px solid rgba(20, 20, 20, 0.12)",
           boxShadow: "-16px 0 40px rgba(0, 0, 0, 0.12)",
-          padding: "36px 32px",
+          padding: "36px 32px 48px 32px",
           display: "flex",
           flexDirection: "column",
           overflowY: "auto",
+          WebkitOverflowScrolling: "touch",
+          overscrollBehavior: "contain",
           fontFamily: "var(--font-sans)",
           color: "var(--text-primary)",
         }}
@@ -327,7 +340,7 @@ export default function PortfolioDrawer({ isOpen, onClose }: PortfolioDrawerProp
 
         {/* Positions List */}
         <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "32px" }}>
-          {positions.map((pos) => {
+          {positions.map((pos: Position) => {
             const pctUnderStrike = (((pos.strikePrice - pos.currentPrice) / pos.strikePrice) * 100).toFixed(1);
 
             return (
@@ -464,7 +477,7 @@ export default function PortfolioDrawer({ isOpen, onClose }: PortfolioDrawerProp
         {/* Footer info in drawer */}
         <div
           style={{
-            marginTop: "auto",
+            marginTop: "24px",
             paddingTop: "20px",
             borderTop: "1px solid var(--border-subtle)",
             fontFamily: "var(--font-mono)",

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 
@@ -16,6 +16,15 @@ export default function FaucetModal({ isOpen, onClose, onSuccess }: FaucetModalP
   const [selectedToken, setSelectedToken] = useState<string>("xNVDA");
   const [loading, setLoading] = useState<boolean>(false);
   const [txSig, setTxSig] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const originalStyle = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -82,21 +91,31 @@ export default function FaucetModal({ isOpen, onClose, onSuccess }: FaucetModalP
         backdropFilter: "blur(10px)",
         WebkitBackdropFilter: "blur(10px)",
         zIndex: 1100,
-        display: "grid",
-        placeItems: "center",
-        padding: "16px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "24px 16px",
+        overflowY: "auto",
+        WebkitOverflowScrolling: "touch",
+        overscrollBehavior: "contain",
       }}
       onClick={onClose}
     >
       <div
         style={{
           width: "100%",
-          maxWidth: "460px",
+          maxWidth: "480px",
+          maxHeight: "calc(100dvh - 48px)",
+          overflowY: "auto",
+          WebkitOverflowScrolling: "touch",
+          overscrollBehavior: "contain",
           backgroundColor: "#FFFFFF",
           borderRadius: "24px",
           border: "1px solid rgba(20, 20, 20, 0.12)",
           boxShadow: "0 24px 60px rgba(0, 0, 0, 0.2)",
-          padding: "36px",
+          padding: "36px 32px",
+          position: "relative",
+          margin: "auto",
           fontFamily: "var(--font-sans)",
           color: "var(--text-primary)",
         }}

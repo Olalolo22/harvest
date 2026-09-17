@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { VaultItem } from "./Hero";
@@ -22,6 +22,14 @@ export default function VaultModal({ vault, onClose, onOpenFaucet }: VaultModalP
 
   type StrikeProfile = "conservative" | "balanced" | "aggressive";
   const [strikeProfile, setStrikeProfile] = useState<StrikeProfile>("balanced");
+
+  useEffect(() => {
+    const originalStyle = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, []);
 
   if (!vault) return null;
 
@@ -94,23 +102,32 @@ export default function VaultModal({ vault, onClose, onOpenFaucet }: VaultModalP
         backgroundColor: "rgba(21, 21, 21, 0.72)",
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
-        display: "grid",
-        placeItems: "center",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
         zIndex: 999,
-        padding: "16px",
+        padding: "24px 16px",
+        overflowY: "auto",
+        WebkitOverflowScrolling: "touch",
+        overscrollBehavior: "contain",
       }}
       onClick={onClose}
     >
       <div
         style={{
           width: "100%",
-          maxWidth: "480px",
+          maxWidth: "500px",
+          maxHeight: "calc(100dvh - 48px)",
+          overflowY: "auto",
+          WebkitOverflowScrolling: "touch",
+          overscrollBehavior: "contain",
           backgroundColor: "#FFFFFF",
           borderRadius: "24px",
           border: "1px solid rgba(20, 20, 20, 0.12)",
           boxShadow: "0 30px 60px -12px rgba(20, 20, 20, 0.25)",
-          padding: "36px",
+          padding: "36px 32px",
           position: "relative",
+          margin: "auto",
           fontFamily: "var(--font-sans)",
           color: "var(--text-primary)",
         }}
