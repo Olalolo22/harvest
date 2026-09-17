@@ -17,47 +17,49 @@ import Footer from "./components/Footer";
 import VaultModal from "./components/VaultModal";
 import PortfolioDrawer from "./components/PortfolioDrawer";
 import FaucetModal from "./components/FaucetModal";
-
-const vaults: VaultItem[] = [
-  {
-    symbol: "xNVDA",
-    name: "NVIDIA Corporation",
-    color: "#76b900",
-    price: "$213.90",
-    premium: "8.4%",
-    strike: "$225.00",
-    cycle: 2,
-    status: "Active",
-    mint: "EM5uTvQNpeTt4P1vRyfRdvtku42MytZjRsPG7KG4BRqV",
-  },
-  {
-    symbol: "xAAPL",
-    name: "Apple Inc.",
-    color: "#9ca3af",
-    price: "$228.71",
-    premium: "6.8%",
-    strike: "$235.50",
-    cycle: 1,
-    status: "Open",
-    mint: "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr",
-  },
-  {
-    symbol: "xTSLA",
-    name: "Tesla Inc.",
-    color: "#e82127",
-    price: "$441.62",
-    premium: "10.2%",
-    strike: "$455.00",
-    cycle: 1,
-    status: "Open",
-    mint: "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr",
-  },
-];
+import { usePythPrices } from "./hooks/usePythPrices";
 
 export default function Home() {
+  const pyth = usePythPrices();
   const [selectedVault, setSelectedVault] = useState<VaultItem | null>(null);
   const [isPortfolioOpen, setIsPortfolioOpen] = useState<boolean>(false);
   const [isFaucetOpen, setIsFaucetOpen] = useState<boolean>(false);
+
+  const activeVaults: VaultItem[] = [
+    {
+      symbol: "xNVDA",
+      name: "NVIDIA Corporation",
+      color: "#76b900",
+      price: pyth.xNVDA.price,
+      premium: "8.4%",
+      strike: `$${(pyth.xNVDA.numericPrice * 1.05).toFixed(2)}`,
+      cycle: 2,
+      status: "Active",
+      mint: "EM5uTvQNpeTt4P1vRyfRdvtku42MytZjRsPG7KG4BRqV",
+    },
+    {
+      symbol: "xAAPL",
+      name: "Apple Inc.",
+      color: "#9ca3af",
+      price: pyth.xAAPL.price,
+      premium: "6.8%",
+      strike: `$${(pyth.xAAPL.numericPrice * 1.03).toFixed(2)}`,
+      cycle: 1,
+      status: "Open",
+      mint: "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr",
+    },
+    {
+      symbol: "xTSLA",
+      name: "Tesla Inc.",
+      color: "#e82127",
+      price: pyth.xTSLA.price,
+      premium: "10.2%",
+      strike: `$${(pyth.xTSLA.numericPrice * 1.05).toFixed(2)}`,
+      cycle: 1,
+      status: "Open",
+      mint: "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr",
+    },
+  ];
 
   return (
     <main className={styles.shell}>
@@ -70,7 +72,7 @@ export default function Home() {
       {/* 2. Hero: Headline + Large Vault Card Object */}
       <Hero
         onSelectVault={setSelectedVault}
-        featuredVault={vaults[0]}
+        featuredVault={activeVaults[0]}
       />
 
       {/* 3. Live Harvest Strip (Dark Horizontal Status Band) */}
@@ -84,7 +86,7 @@ export default function Home() {
 
       {/* 6. Product Showcase: xNVDA, xAAPL, xTSLA */}
       <VaultGrid
-        vaults={vaults}
+        vaults={activeVaults}
         onSelectVault={setSelectedVault}
       />
 
