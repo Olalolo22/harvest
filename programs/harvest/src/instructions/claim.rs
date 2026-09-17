@@ -237,7 +237,7 @@ pub struct Claim<'info> {
         ],
         bump = user_position.bump,
         has_one = owner,
-        has_one = vault @ HarvestError::CycleMismatch,
+        constraint = user_position.vault == vault_config.key() @ HarvestError::CycleMismatch,
     )]
     pub user_position: Account<'info, UserPosition>,
 
