@@ -17,6 +17,7 @@ pub fn handler(ctx: Context<Deposit>, amount: u64) -> Result<()> {
     let vault_key = ctx.accounts.vault_config.key();
     let vault_decimals = ctx.accounts.vault_config.xstock_decimals;
     let vault_current_cycle;
+    let vault_ticker;
     {
         let vault = &mut ctx.accounts.vault_config;
         require!(
@@ -45,6 +46,7 @@ pub fn handler(ctx: Context<Deposit>, amount: u64) -> Result<()> {
             .checked_add(1)
             .ok_or(error!(HarvestError::MathOverflow))?;
         vault_current_cycle = vault.current_cycle;
+        vault_ticker = vault.ticker_str();
     }
 
     // Initialise the user position (vault borrow has ended above).
@@ -62,9 +64,9 @@ pub fn handler(ctx: Context<Deposit>, amount: u64) -> Result<()> {
     msg!(
         "Deposit: {} xStock ({} base units) into {} vault, cycle {}",
         amount,
-        vault.ticker_str(),
+        vault_ticker,
         amount,
-        vault.current_cycle,
+        vault_current_cycle,
     );
 
     Ok(())
