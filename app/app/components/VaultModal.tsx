@@ -3,21 +3,10 @@
 import React, { useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
-
-interface VaultData {
-  symbol: string;
-  name: string;
-  color: string;
-  price: string;
-  premium: string;
-  strike: string;
-  cycle: number;
-  status: string;
-  mint: string;
-}
+import { VaultItem } from "./Hero";
 
 interface VaultModalProps {
-  vault: VaultData | null;
+  vault: VaultItem | null;
   onClose: () => void;
 }
 
@@ -35,7 +24,7 @@ export default function VaultModal({ vault, onClose }: VaultModalProps) {
   const numericAmount = parseFloat(amount) || 0;
   const numericPrice = parseFloat(vault.price.replace("$", "")) || 200;
   const estimatedUsdValue = numericAmount * numericPrice;
-  // 1.5% weekly premium
+  // ~1.5% weekly premium simulation
   const estimatedPremiumUsdc = (estimatedUsdValue * 0.015).toFixed(2);
 
   const handleDeposit = async () => {
@@ -53,10 +42,10 @@ export default function VaultModal({ vault, onClose }: VaultModalProps) {
     setTxSignature(null);
 
     try {
-      // In production / live test: invoke anchor program deposit()
-      // Simulate confirmation for demo interaction
       await new Promise((r) => setTimeout(r, 1200));
-      setTxSignature("4iGLKidV77gMkrAV6dbNZcUfkCEunNyiNcpwLTxjX4qaEWf2iHzPMd4rdq8nLdn6EiD8bfwDE174FuZfwrU81e2C");
+      setTxSignature(
+        "4iGLKidV77gMkrAV6dbNZcUfkCEunNyiNcpwLTxjX4qaEWf2iHzPMd4rdq8nLdn6EiD8bfwDE174FuZfwrU81e2C"
+      );
     } catch (e: unknown) {
       setErrorMsg(e instanceof Error ? e.message : "Transaction failed");
     } finally {
@@ -76,7 +65,9 @@ export default function VaultModal({ vault, onClose }: VaultModalProps) {
 
     try {
       await new Promise((r) => setTimeout(r, 1200));
-      setTxSignature("5tTm8F5UiytsAJWzHwtdpP4raMkEVhatZgwD75s3frZRFdZGgsos7JKMTnbPBALKDFbo9aEdggfNrVrCxpias9rC");
+      setTxSignature(
+        "5tTm8F5UiytsAJWzHwtdpP4raMkEVhatZgwD75s3frZRFdZGgsos7JKMTnbPBALKDFbo9aEdggfNrVrCxpias9rC"
+      );
     } catch (e: unknown) {
       setErrorMsg(e instanceof Error ? e.message : "Claim failed");
     } finally {
@@ -89,8 +80,9 @@ export default function VaultModal({ vault, onClose }: VaultModalProps) {
       style={{
         position: "fixed",
         inset: 0,
-        backgroundColor: "rgba(28, 43, 36, 0.7)",
-        backdropFilter: "blur(6px)",
+        backgroundColor: "rgba(21, 21, 21, 0.72)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
         display: "grid",
         placeItems: "center",
         zIndex: 999,
@@ -101,53 +93,68 @@ export default function VaultModal({ vault, onClose }: VaultModalProps) {
       <div
         style={{
           width: "100%",
-          maxWidth: "460px",
-          backgroundColor: "#ffffff",
-          borderRadius: "14px",
-          border: "1px solid #dfe5dc",
-          boxShadow: "0 25px 50px -12px rgba(28, 43, 36, 0.25)",
-          padding: "28px",
+          maxWidth: "480px",
+          backgroundColor: "#FFFFFF",
+          borderRadius: "24px",
+          border: "1px solid rgba(20, 20, 20, 0.12)",
+          boxShadow: "0 30px 60px -12px rgba(20, 20, 20, 0.25)",
+          padding: "36px",
           position: "relative",
-          fontFamily: "'Manrope', sans-serif",
-          color: "#1c2b24",
+          fontFamily: "var(--font-sans)",
+          color: "var(--text-primary)",
         }}
         onClick={(e: React.MouseEvent) => e.stopPropagation()}
       >
         {/* Header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <div
-              style={{
-                width: "42px",
-                height: "42px",
-                borderRadius: "8px",
-                backgroundColor: vault.color,
-                color: "#fff",
-                display: "grid",
-                placeItems: "center",
-                fontWeight: 800,
-                fontSize: "18px",
-              }}
-            >
-              {vault.symbol[1]}
-            </div>
-            <div>
-              <h2 style={{ fontSize: "20px", fontWeight: 800, margin: 0 }}>{vault.symbol} Vault</h2>
-              <span style={{ fontSize: "12px", color: "#718078" }}>
-                Cycle #{vault.cycle} · {vault.name}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            marginBottom: "24px",
+          }}
+        >
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+              <h2 style={{ fontSize: "24px", fontWeight: 700, letterSpacing: "-0.04em", margin: 0 }}>
+                {vault.symbol}
+              </h2>
+              <span
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "10px",
+                  letterSpacing: "0.1em",
+                  padding: "2px 8px",
+                  borderRadius: "999px",
+                  background: "var(--accent-gold-soft)",
+                  color: "var(--accent-gold)",
+                  fontWeight: 600,
+                }}
+              >
+                DEVNET
               </span>
             </div>
+            <span style={{ fontSize: "13px", color: "var(--text-muted)" }}>
+              Cycle #{vault.cycle} · {vault.name}
+            </span>
           </div>
+
           <button
             onClick={onClose}
             style={{
               background: "none",
-              border: "none",
-              fontSize: "24px",
+              border: "1px solid var(--border-subtle)",
+              borderRadius: "50%",
+              width: "32px",
+              height: "32px",
+              display: "grid",
+              placeItems: "center",
+              fontSize: "16px",
               cursor: "pointer",
-              color: "#8a978f",
+              color: "var(--text-secondary)",
               lineHeight: 1,
             }}
+            aria-label="Close modal"
           >
             ×
           </button>
@@ -156,70 +163,114 @@ export default function VaultModal({ vault, onClose }: VaultModalProps) {
         {/* Live Vault Metrics */}
         <div
           style={{
-            backgroundColor: "#f7f9f5",
-            borderRadius: "10px",
-            padding: "16px",
+            backgroundColor: "var(--bg-primary)",
+            borderRadius: "16px",
+            padding: "18px 20px",
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: "12px",
-            marginBottom: "20px",
-            fontSize: "12px",
-            border: "1px solid #e7ede5",
+            gap: "16px",
+            marginBottom: "24px",
+            border: "1px solid var(--border-subtle)",
           }}
         >
           <div>
-            <div style={{ color: "#718078", marginBottom: "4px" }}>CURRENT PRICE</div>
-            <strong style={{ fontSize: "16px", color: "#1c2b24" }}>{vault.price}</strong>
-          </div>
-          <div>
-            <div style={{ color: "#718078", marginBottom: "4px" }}>LOCKED STRIKE (+3%)</div>
-            <strong style={{ fontSize: "16px", color: "#789f18" }}>{vault.strike}</strong>
-          </div>
-          <div>
-            <div style={{ color: "#718078", marginBottom: "4px" }}>EST. WEEKLY PREMIUM</div>
-            <strong style={{ fontSize: "14px", color: "#1c2b24" }}>+{vault.premium}</strong>
-          </div>
-          <div>
-            <div style={{ color: "#718078", marginBottom: "4px" }}>CYCLE STATE</div>
-            <span
+            <div
               style={{
-                display: "inline-block",
-                padding: "2px 8px",
-                borderRadius: "12px",
-                backgroundColor: "#eff8d9",
-                color: "#668a13",
-                fontWeight: 700,
+                fontFamily: "var(--font-mono)",
                 fontSize: "10px",
+                letterSpacing: "0.1em",
+                color: "var(--text-muted)",
+                marginBottom: "4px",
               }}
             >
-              {vault.status.toUpperCase()}
+              CURRENT PRICE
+            </div>
+            <strong style={{ fontSize: "16px", color: "var(--text-primary)" }}>
+              {vault.price}
+            </strong>
+          </div>
+          <div>
+            <div
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "10px",
+                letterSpacing: "0.1em",
+                color: "var(--text-muted)",
+                marginBottom: "4px",
+              }}
+            >
+              LOCKED STRIKE
+            </div>
+            <strong style={{ fontSize: "16px", color: "var(--accent-gold)" }}>
+              {vault.strike}
+            </strong>
+          </div>
+          <div>
+            <div
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "10px",
+                letterSpacing: "0.1em",
+                color: "var(--text-muted)",
+                marginBottom: "4px",
+              }}
+            >
+              EST. WEEKLY PREMIUM
+            </div>
+            <strong style={{ fontSize: "15px", color: "var(--text-primary)" }}>
+              +{vault.premium}
+            </strong>
+          </div>
+          <div>
+            <div
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "10px",
+                letterSpacing: "0.1em",
+                color: "var(--text-muted)",
+                marginBottom: "4px",
+              }}
+            >
+              CYCLE EXPIRY
+            </div>
+            <span
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "12px",
+                fontWeight: 600,
+                color: "var(--text-secondary)",
+              }}
+            >
+              4d 12h remaining
             </span>
           </div>
         </div>
 
-        {/* Tabs */}
+        {/* Tab Switcher */}
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            backgroundColor: "#eef2eb",
-            borderRadius: "8px",
+            backgroundColor: "var(--bg-primary)",
+            borderRadius: "12px",
             padding: "4px",
-            marginBottom: "20px",
+            marginBottom: "24px",
+            border: "1px solid var(--border-subtle)",
           }}
         >
           <button
             onClick={() => setTab("deposit")}
             style={{
               padding: "10px",
-              borderRadius: "6px",
+              borderRadius: "8px",
               border: "none",
-              fontWeight: 700,
+              fontWeight: 600,
               fontSize: "13px",
               cursor: "pointer",
-              backgroundColor: tab === "deposit" ? "#ffffff" : "transparent",
-              color: tab === "deposit" ? "#1c2b24" : "#718078",
-              boxShadow: tab === "deposit" ? "0 2px 4px rgba(0,0,0,0.06)" : "none",
+              backgroundColor: tab === "deposit" ? "#FFFFFF" : "transparent",
+              color: tab === "deposit" ? "var(--text-primary)" : "var(--text-muted)",
+              boxShadow: tab === "deposit" ? "0 2px 8px rgba(0,0,0,0.06)" : "none",
+              transition: "all 0.15s ease",
             }}
           >
             Deposit xStock
@@ -228,35 +279,46 @@ export default function VaultModal({ vault, onClose }: VaultModalProps) {
             onClick={() => setTab("claim")}
             style={{
               padding: "10px",
-              borderRadius: "6px",
+              borderRadius: "8px",
               border: "none",
-              fontWeight: 700,
+              fontWeight: 600,
               fontSize: "13px",
               cursor: "pointer",
-              backgroundColor: tab === "claim" ? "#ffffff" : "transparent",
-              color: tab === "claim" ? "#1c2b24" : "#718078",
-              boxShadow: tab === "claim" ? "0 2px 4px rgba(0,0,0,0.06)" : "none",
+              backgroundColor: tab === "claim" ? "#FFFFFF" : "transparent",
+              color: tab === "claim" ? "var(--text-primary)" : "var(--text-muted)",
+              boxShadow: tab === "claim" ? "0 2px 8px rgba(0,0,0,0.06)" : "none",
+              transition: "all 0.15s ease",
             }}
           >
-            Claim & Position
+            Claim & Settlement
           </button>
         </div>
 
         {/* Tab Content: Deposit */}
         {tab === "deposit" ? (
           <div>
-            <div style={{ marginBottom: "16px" }}>
-              <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#44574d", marginBottom: "6px" }}>
+            <div style={{ marginBottom: "20px" }}>
+              <label
+                style={{
+                  display: "block",
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "11px",
+                  letterSpacing: "0.08em",
+                  color: "var(--text-secondary)",
+                  marginBottom: "8px",
+                  textTransform: "uppercase",
+                }}
+              >
                 Deposit Amount ({vault.symbol})
               </label>
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  border: "1px solid #cad6ca",
-                  borderRadius: "8px",
-                  padding: "10px 14px",
-                  backgroundColor: "#fff",
+                  border: "1px solid var(--border-subtle)",
+                  borderRadius: "12px",
+                  padding: "12px 16px",
+                  backgroundColor: "var(--bg-primary)",
                 }}
               >
                 <input
@@ -269,35 +331,57 @@ export default function VaultModal({ vault, onClose }: VaultModalProps) {
                     border: "none",
                     outline: "none",
                     width: "100%",
-                    fontSize: "18px",
+                    fontSize: "20px",
                     fontWeight: 700,
-                    color: "#1c2b24",
+                    fontFamily: "var(--font-mono)",
+                    color: "var(--text-primary)",
+                    backgroundColor: "transparent",
                   }}
                   placeholder="1.0"
                 />
-                <span style={{ fontWeight: 700, fontSize: "13px", color: "#718078", marginLeft: "8px" }}>
+                <span
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontWeight: 600,
+                    fontSize: "13px",
+                    color: "var(--text-muted)",
+                    marginLeft: "8px",
+                  }}
+                >
                   {vault.symbol}
                 </span>
               </div>
-              <span style={{ fontSize: "11px", color: "#87948d", marginTop: "4px", display: "block" }}>
+              <span
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "11px",
+                  color: "var(--text-muted)",
+                  marginTop: "6px",
+                  display: "block",
+                }}
+              >
                 Min deposit: 1.0 token · Est. Value: ~${estimatedUsdValue.toFixed(2)} USD
               </span>
             </div>
 
             <div
               style={{
-                backgroundColor: "#f4f8ec",
-                border: "1px solid #ddecbe",
-                borderRadius: "8px",
-                padding: "12px 14px",
-                marginBottom: "20px",
+                backgroundColor: "var(--bg-primary)",
+                border: "1px solid var(--border-subtle)",
+                borderRadius: "12px",
+                padding: "14px 16px",
+                marginBottom: "24px",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
               }}
             >
-              <span style={{ fontSize: "12px", color: "#44574d" }}>Weekly Premium Yield:</span>
-              <strong style={{ fontSize: "15px", color: "#789f18" }}>+{estimatedPremiumUsdc} USDC</strong>
+              <span style={{ fontSize: "13px", color: "var(--text-secondary)" }}>
+                Weekly Premium Yield:
+              </span>
+              <strong style={{ fontFamily: "var(--font-mono)", fontSize: "15px", color: "var(--accent-green)" }}>
+                +{estimatedPremiumUsdc} USDC
+              </strong>
             </div>
 
             <button
@@ -305,25 +389,26 @@ export default function VaultModal({ vault, onClose }: VaultModalProps) {
               disabled={loading}
               style={{
                 width: "100%",
-                padding: "14px",
-                backgroundColor: "#1c2b24",
-                color: "#ffffff",
-                borderRadius: "8px",
+                height: "50px",
+                backgroundColor: "var(--text-primary)",
+                color: "#FFFFFF",
+                borderRadius: "999px",
                 border: "none",
-                fontWeight: 700,
+                fontWeight: 600,
                 fontSize: "14px",
                 cursor: loading ? "not-allowed" : "pointer",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "8px",
+                transition: "background-color 0.2s ease",
               }}
             >
               {loading ? (
                 "Confirming on Solana..."
               ) : connected ? (
                 <>
-                  Deposit {amount} {vault.symbol} <span style={{ color: "#d8ff5f" }}>→</span>
+                  Deposit {amount} {vault.symbol} <span>→</span>
                 </>
               ) : (
                 "Connect Wallet to Deposit"
@@ -335,24 +420,30 @@ export default function VaultModal({ vault, onClose }: VaultModalProps) {
           <div>
             <div
               style={{
-                backgroundColor: "#f7f9f5",
-                borderRadius: "10px",
-                padding: "16px",
-                marginBottom: "20px",
-                border: "1px solid #e7ede5",
+                backgroundColor: "var(--bg-primary)",
+                borderRadius: "16px",
+                padding: "18px 20px",
+                marginBottom: "24px",
+                border: "1px solid var(--border-subtle)",
               }}
             >
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
-                <span style={{ fontSize: "12px", color: "#718078" }}>Deposited Balance:</span>
-                <strong style={{ fontSize: "13px" }}>1.0 {vault.symbol}</strong>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
+                <span style={{ fontSize: "13px", color: "var(--text-secondary)" }}>Deposited Collateral:</span>
+                <strong style={{ fontFamily: "var(--font-mono)", fontSize: "13px" }}>
+                  1.0 {vault.symbol}
+                </strong>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
-                <span style={{ fontSize: "12px", color: "#718078" }}>Earned Premium:</span>
-                <strong style={{ fontSize: "13px", color: "#789f18" }}>+2.85 USDC</strong>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
+                <span style={{ fontSize: "13px", color: "var(--text-secondary)" }}>Earned Weekly Premium:</span>
+                <strong style={{ fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--accent-green)" }}>
+                  +2.85 USDC
+                </strong>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: "12px", color: "#718078" }}>Status:</span>
-                <strong style={{ fontSize: "12px", color: "#44574d" }}>Ready to Claim</strong>
+                <span style={{ fontSize: "13px", color: "var(--text-secondary)" }}>Settlement Status:</span>
+                <strong style={{ fontFamily: "var(--font-mono)", fontSize: "12px", color: "var(--accent-gold)" }}>
+                  Unexercised (Collateral returned)
+                </strong>
               </div>
             </div>
 
@@ -361,42 +452,42 @@ export default function VaultModal({ vault, onClose }: VaultModalProps) {
               disabled={loading}
               style={{
                 width: "100%",
-                padding: "14px",
-                backgroundColor: "#789f18",
-                color: "#ffffff",
-                borderRadius: "8px",
+                height: "50px",
+                backgroundColor: "var(--text-primary)",
+                color: "#FFFFFF",
+                borderRadius: "999px",
                 border: "none",
-                fontWeight: 700,
+                fontWeight: 600,
                 fontSize: "14px",
                 cursor: loading ? "not-allowed" : "pointer",
               }}
             >
-              {loading ? "Claiming..." : "Claim 1.0 xStock + 2.85 USDC"}
+              {loading ? "Claiming..." : `Claim 1.0 ${vault.symbol} + 2.85 USDC`}
             </button>
           </div>
         )}
 
-        {/* Tx Feedback */}
+        {/* Transaction Feedback */}
         {txSignature && (
           <div
             style={{
-              marginTop: "16px",
-              padding: "12px",
-              borderRadius: "8px",
-              backgroundColor: "#eff8d9",
-              border: "1px solid #ddecbe",
+              marginTop: "20px",
+              padding: "14px",
+              borderRadius: "12px",
+              backgroundColor: "var(--bg-primary)",
+              border: "1px solid var(--border-subtle)",
               fontSize: "12px",
-              color: "#44574d",
+              color: "var(--text-secondary)",
               wordBreak: "break-all",
             }}
           >
-            ✅ <strong>Transaction Confirmed!</strong>
-            <div style={{ marginTop: "4px" }}>
+            ✅ <strong style={{ color: "var(--text-primary)" }}>Transaction Confirmed!</strong>
+            <div style={{ marginTop: "6px" }}>
               <a
                 href={`https://explorer.solana.com/tx/${txSignature}?cluster=devnet`}
                 target="_blank"
                 rel="noreferrer"
-                style={{ color: "#668a13", textDecoration: "underline", fontWeight: 600 }}
+                style={{ color: "var(--accent-green)", textDecoration: "underline", fontWeight: 600 }}
               >
                 View on Solana Explorer ↗
               </a>
@@ -407,11 +498,11 @@ export default function VaultModal({ vault, onClose }: VaultModalProps) {
         {errorMsg && (
           <div
             style={{
-              marginTop: "16px",
-              padding: "12px",
-              borderRadius: "8px",
-              backgroundColor: "#ffebee",
-              border: "1px solid #ffcdd2",
+              marginTop: "20px",
+              padding: "14px",
+              borderRadius: "12px",
+              backgroundColor: "rgba(220, 50, 50, 0.08)",
+              border: "1px solid rgba(220, 50, 50, 0.2)",
               fontSize: "12px",
               color: "#c62828",
             }}

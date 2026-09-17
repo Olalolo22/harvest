@@ -3,11 +3,33 @@
 import React from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
-import styles from "../page.module.css";
 
-export default function ConnectWalletButton() {
+interface ConnectWalletButtonProps {
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+export default function ConnectWalletButton({ className, style }: ConnectWalletButtonProps) {
   const { publicKey, disconnect, connected } = useWallet();
   const { setVisible } = useWalletModal();
+
+  const defaultStyle: React.CSSProperties = {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "8px",
+    height: "42px",
+    padding: "0 18px",
+    borderRadius: "999px",
+    border: "1px solid rgba(20, 20, 20, 0.14)",
+    backgroundColor: "#FFFFFF",
+    color: "#171717",
+    fontSize: "13px",
+    fontWeight: 600,
+    cursor: "pointer",
+    fontFamily: "var(--font-sans)",
+    transition: "all 0.15s ease",
+    ...style,
+  };
 
   if (connected && publicKey) {
     const base58 = publicKey.toBase58();
@@ -16,11 +38,17 @@ export default function ConnectWalletButton() {
     return (
       <button
         onClick={() => disconnect()}
-        className={styles.navCta}
-        title="Click to disconnect"
-        style={{ cursor: "pointer", border: "none" }}
+        className={className}
+        style={{
+          ...defaultStyle,
+          borderColor: "rgba(108, 156, 66, 0.4)",
+          backgroundColor: "rgba(108, 156, 66, 0.08)",
+          color: "#466b26",
+          fontFamily: "var(--font-mono)",
+        }}
+        title="Click to disconnect wallet"
       >
-        <span>●</span> {truncated}
+        <span style={{ fontSize: "9px" }}>●</span> {truncated}
       </button>
     );
   }
@@ -28,10 +56,10 @@ export default function ConnectWalletButton() {
   return (
     <button
       onClick={() => setVisible(true)}
-      className={styles.navCta}
-      style={{ cursor: "pointer", border: "none" }}
+      className={className}
+      style={defaultStyle}
     >
-      Connect wallet <span>↗</span>
+      Connect wallet <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>↗</span>
     </button>
   );
 }
