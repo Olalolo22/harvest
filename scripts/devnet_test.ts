@@ -59,7 +59,7 @@ const TICKER = Buffer.from("NVDA\0\0\0\0");  // 8 bytes
 const STRIKE_OFFSET_BPS = 300;               // 3% OTM
 const PREMIUM_RATE_BPS  = 150;               // 1.5% weekly
 const CYCLE_DURATION    = 60;                // 60 seconds for fast devnet test
-const DEPOSIT_AMOUNT    = 1_000_000n;        // 1 xStock token (6 decimals)
+const DEPOSIT_AMOUNT    = 100_000_000n;      // 1.0 xStock token (8 decimals = MIN_DEPOSIT_AMOUNT)
 const RESERVE_USDC      = 100_000_000n;      // 100 USDC to seed reserve
 
 // ---------------------------------------------------------------------------
@@ -153,7 +153,7 @@ async function main() {
       authority,
       authority.publicKey,   // mint authority
       null,                  // freeze authority
-      6,                     // decimals
+      8,                     // decimals (8-decimal xStock standard)
       Keypair.generate(),
       {},
       TOKEN_2022_PROGRAM_ID
