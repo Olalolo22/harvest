@@ -47,7 +47,7 @@ const DEVNET_USDC_MINT = new PublicKey(
   process.env.USDC_MINT ?? "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr"
 );
 const CLUSTER = "devnet";
-const RPC = "https://api.devnet.solana.com";
+const RPC = process.env.RPC_URL ?? "https://api.devnet.solana.com";
 
 // Simulated prices in 6-decimal USD precision (PRICE_PRECISION = 1_000_000)
 const MOCK_LOCK_PRICE  = 191_580_000n;  // $191.58  — NVDA example
@@ -81,6 +81,24 @@ function pda(seeds: Buffer[], programId: PublicKey): [PublicKey, number] {
 
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+async function withRetry<T>(fn: () => Promise<T>, retries = 4, delayMs = 3000): Promise<T> {
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await fn();
+    } catch (e: any) {
+      const msg = e?.message ?? e?.toString() ?? "";
+      if (i < retries - 1 && msg.includes("429")) {
+        log(`RPC 429 rate limit — waiting ${delayMs}ms before retry (${i + 1}/${retries})...`);
+        await sleep(delayMs);
+        delayMs = Math.min(delayMs * 2, 10000);
+      } else {
+        throw e;
+      }
+    }
+  }
+  throw new Error("Retry attempts exhausted");
 }
 
 function log(msg: string) {
@@ -312,10 +330,12 @@ async function main() {
   }
 
   // ──────────────────────────────────────────────────────────────────────────
+  // ──────────────────────────────────────────────────────────────────────────
   // STEP 6: Lock cycle
   // ──────────────────────────────────────────────────────────────────────────
   log("\n─── STEP 6: Lock Cycle ───");
-  const vaultStateAfterDeposit: any = await program.account.vaultConfig.fetch(vaultConfigPDA);
+  await sleep(1500);
+  const vaultStateAfterDeposit: any = await withRetry(() => program.account.vaultConfig.fetch(vaultConfigPDA));
   const cycleStateName = Object.keys(vaultStateAfterDeposit.cycleState)[0];
   log(`Current cycle state: ${cycleStateName}`);
 
@@ -324,13 +344,13 @@ async function main() {
     pass("lock_cycle (skipped)");
   } else {
     try {
-      const tx = await program.methods
+      const tx = await withRetry(() => program.methods
         .lockCycle(new anchor.BN(MOCK_LOCK_PRICE.toString()))
         .accounts({
           authority: authority.publicKey,
           vaultConfig: vaultConfigPDA,
         })
-        .rpc();
+        .rpc());
       log(`lock_cycle tx: ${tx}`);
       pass("lock_cycle()");
     } catch (e) {
@@ -342,7 +362,8 @@ async function main() {
   // STEP 7: Wait for settle window, then settle OTM
   // ──────────────────────────────────────────────────────────────────────────
   log("\n─── STEP 7: Settle OTM ───");
-  const vaultAfterLock: any = await program.account.vaultConfig.fetch(vaultConfigPDA);
+  await sleep(1000);
+  const vaultAfterLock: any = await withRetry(() => program.account.vaultConfig.fetch(vaultConfigPDA));
   const settleAfter: anchor.BN = vaultAfterLock.settleAfter;
   const now = Math.floor(Date.now() / 1000);
   const waitSecs = Math.max(0, settleAfter.toNumber() - now + 2);
@@ -352,7 +373,7 @@ async function main() {
     await sleep(waitSecs * 1000);
   }
 
-  const vaultStatePreSettle: any = await program.account.vaultConfig.fetch(vaultConfigPDA);
+  const vaultStatePreSettle: any = await withRetry(() => program.account.vaultConfig.fetch(vaultConfigPDA));
   const preSettleState = Object.keys(vaultStatePreSettle.cycleState)[0];
 
   if (preSettleState === "settled") {
@@ -360,13 +381,13 @@ async function main() {
     pass("settle_otm (skipped)");
   } else {
     try {
-      const tx = await program.methods
+      const tx = await withRetry(() => program.methods
         .settleOtm(new anchor.BN(MOCK_SETTLE_OTM.toString()))
         .accounts({
           authority: authority.publicKey,
           vaultConfig: vaultConfigPDA,
         })
-        .rpc();
+        .rpc());
       log(`settle_otm tx: ${tx}`);
       pass("settle_otm()");
     } catch (e) {
@@ -378,12 +399,13 @@ async function main() {
   // STEP 8: Claim
   // ──────────────────────────────────────────────────────────────────────────
   log("\n─── STEP 8: Claim ───");
+  await sleep(1500);
 
-  const userUsdcAta = await getOrCreateAssociatedTokenAccount(
+  const userUsdcAta = await withRetry(() => getOrCreateAssociatedTokenAccount(
     connection, authority, DEVNET_USDC_MINT, authority.publicKey, false, "confirmed", {}, TOKEN_PROGRAM_ID
-  );
+  ));
 
-  const positionState: any = await program.account.userPosition.fetch(userPositionPDA);
+  const positionState: any = await withRetry(() => program.account.userPosition.fetch(userPositionPDA));
   const posStateName = Object.keys(positionState.state)[0];
   log(`Position state: ${posStateName}`);
 
@@ -392,7 +414,7 @@ async function main() {
     pass("claim (skipped — already claimed)");
   } else {
     try {
-      const tx = await program.methods
+      const tx = await withRetry(() => program.methods
         .claim()
         .accounts({
           owner: authority.publicKey,
@@ -406,7 +428,7 @@ async function main() {
           tokenProgram2022: TOKEN_2022_PROGRAM_ID,
           tokenProgram: TOKEN_PROGRAM_ID,
         })
-        .rpc();
+        .rpc());
       log(`claim tx: ${tx}`);
       pass("claim()");
     } catch (e) {
@@ -418,9 +440,10 @@ async function main() {
   // STEP 9: Final state check
   // ──────────────────────────────────────────────────────────────────────────
   log("\n─── STEP 9: Final State ───");
-  const finalVault: any = await program.account.vaultConfig.fetch(vaultConfigPDA);
-  const finalPosition: any = await program.account.userPosition.fetch(userPositionPDA);
-  const finalUsdcAta = await getAccount(connection, userUsdcAta.address, "confirmed", TOKEN_PROGRAM_ID);
+  await sleep(1500);
+  const finalVault: any = await withRetry(() => program.account.vaultConfig.fetch(vaultConfigPDA));
+  const finalPosition: any = await withRetry(() => program.account.userPosition.fetch(userPositionPDA));
+  const finalUsdcAta = await withRetry(() => getAccount(connection, userUsdcAta.address, "confirmed", TOKEN_PROGRAM_ID));
 
   console.log(`\n  Vault state         : ${Object.keys(finalVault.cycleState)[0]}`);
   console.log(`  Vault cycle         : ${finalVault.currentCycle.toString()}`);
