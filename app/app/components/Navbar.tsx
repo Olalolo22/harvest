@@ -6,9 +6,10 @@ import ConnectWalletButton from "./ConnectWalletButton";
 
 interface NavbarProps {
   onOpenPortfolio?: () => void;
+  onOpenFaucet?: () => void;
 }
 
-export default function Navbar({ onOpenPortfolio }: NavbarProps) {
+export default function Navbar({ onOpenPortfolio, onOpenFaucet }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -50,6 +51,31 @@ export default function Navbar({ onOpenPortfolio }: NavbarProps) {
           </div>
 
           <div className={styles.navActions}>
+            {onOpenFaucet && (
+              <button
+                type="button"
+                onClick={onOpenFaucet}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  height: "42px",
+                  padding: "0 14px",
+                  borderRadius: "999px",
+                  border: "1px solid rgba(216, 168, 78, 0.4)",
+                  backgroundColor: "rgba(216, 168, 78, 0.08)",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  color: "var(--accent-gold)",
+                  transition: "background-color 0.15s ease",
+                  fontFamily: "var(--font-mono)",
+                }}
+                title="Mint test xStocks and USDC on Devnet"
+              >
+                <span>Faucet ↗</span>
+              </button>
+            )}
             {onOpenPortfolio && (
               <button
                 type="button"

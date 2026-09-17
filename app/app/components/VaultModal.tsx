@@ -8,9 +8,10 @@ import { VaultItem } from "./Hero";
 interface VaultModalProps {
   vault: VaultItem | null;
   onClose: () => void;
+  onOpenFaucet?: () => void;
 }
 
-export default function VaultModal({ vault, onClose }: VaultModalProps) {
+export default function VaultModal({ vault, onClose, onOpenFaucet }: VaultModalProps) {
   const { connected, publicKey } = useWallet();
   const { setVisible } = useWalletModal();
   const [tab, setTab] = useState<"deposit" | "claim">("deposit");
@@ -298,19 +299,37 @@ export default function VaultModal({ vault, onClose }: VaultModalProps) {
         {tab === "deposit" ? (
           <div>
             <div style={{ marginBottom: "20px" }}>
-              <label
-                style={{
-                  display: "block",
-                  fontFamily: "var(--font-mono)",
-                  fontSize: "11px",
-                  letterSpacing: "0.08em",
-                  color: "var(--text-secondary)",
-                  marginBottom: "8px",
-                  textTransform: "uppercase",
-                }}
-              >
-                Deposit Amount ({vault.symbol})
-              </label>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "8px" }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "11px",
+                    letterSpacing: "0.08em",
+                    color: "var(--text-secondary)",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Deposit Amount ({vault.symbol})
+                </label>
+                {onOpenFaucet && (
+                  <button
+                    type="button"
+                    onClick={onOpenFaucet}
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontSize: "11px",
+                      color: "var(--accent-gold)",
+                      textDecoration: "underline",
+                      cursor: "pointer",
+                      background: "none",
+                      border: "none",
+                    }}
+                  >
+                    Need test {vault.symbol}? Faucet ↗
+                  </button>
+                )}
+              </div>
               <div
                 style={{
                   display: "flex",

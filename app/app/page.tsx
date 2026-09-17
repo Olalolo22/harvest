@@ -16,6 +16,7 @@ import FinalCTA from "./components/FinalCTA";
 import Footer from "./components/Footer";
 import VaultModal from "./components/VaultModal";
 import PortfolioDrawer from "./components/PortfolioDrawer";
+import FaucetModal from "./components/FaucetModal";
 
 const vaults: VaultItem[] = [
   {
@@ -56,11 +57,15 @@ const vaults: VaultItem[] = [
 export default function Home() {
   const [selectedVault, setSelectedVault] = useState<VaultItem | null>(null);
   const [isPortfolioOpen, setIsPortfolioOpen] = useState<boolean>(false);
+  const [isFaucetOpen, setIsFaucetOpen] = useState<boolean>(false);
 
   return (
     <main className={styles.shell}>
       {/* 1. Minimal Sticky Navigation */}
-      <Navbar onOpenPortfolio={() => setIsPortfolioOpen(true)} />
+      <Navbar
+        onOpenPortfolio={() => setIsPortfolioOpen(true)}
+        onOpenFaucet={() => setIsFaucetOpen(true)}
+      />
 
       {/* 2. Hero: Headline + Large Vault Card Object */}
       <Hero
@@ -106,6 +111,7 @@ export default function Home() {
         <VaultModal
           vault={selectedVault}
           onClose={() => setSelectedVault(null)}
+          onOpenFaucet={() => setIsFaucetOpen(true)}
         />
       )}
 
@@ -113,6 +119,12 @@ export default function Home() {
       <PortfolioDrawer
         isOpen={isPortfolioOpen}
         onClose={() => setIsPortfolioOpen(false)}
+      />
+
+      {/* 1-Click Devnet Faucet Modal */}
+      <FaucetModal
+        isOpen={isFaucetOpen}
+        onClose={() => setIsFaucetOpen(false)}
       />
     </main>
   );
