@@ -23,3 +23,7 @@ out
 
 # Solana keypairs — never commit
 **/*-keypair.json
+
+# Local documentation & notes
+docs/
+
