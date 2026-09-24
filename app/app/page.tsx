@@ -64,18 +64,18 @@ export default function Home() {
           <span>harvest</span>
         </a>
         <div className={styles.navLinks}>
-          <a href="#how-it-works">How it works</a>
+          <a href="#how-it-works">Our technology</a>
           <a href="#vaults">Vaults</a>
-          <a href="#risks">Risks</a>
+          <a href="#risks">Mission</a>
         </div>
         <ConnectWalletButton />
       </nav>
 
       <section className={styles.hero} id="top">
         <div className={styles.heroCopy}>
-          <div className={styles.eyebrow}><span className={styles.liveDot} /> Built for xStocks on Solana</div>
-          <h1>Make your stocks<br /><em>work for you.</em></h1>
-          <p className={styles.heroText}>Harvest weekly income from your xStocks with a simple, non-custodial covered-call vault.</p>
+          <div className={styles.eyebrow}><span className={styles.liveDot} /> Automated option vaults · Solana mainnet</div>
+          <h1>Automated covered-call<br /><em>yield vaults.</em></h1>
+          <p className={styles.heroText}>Bringing programmable yield generation to tokenized equities on Solana.</p>
           <div className={styles.heroActions}>
             <a href="#vaults" className={styles.primaryButton}>Explore vaults <span aria-hidden="true">→</span></a>
             <a href="#how-it-works" className={styles.textButton}>See how it works <span aria-hidden="true">↓</span></a>
@@ -104,17 +104,17 @@ export default function Home() {
       </section>
 
       <section className={styles.statsBar} aria-label="Harvest protocol stats">
-        <div><strong>$2.4M</strong><span>Vault deposits</span></div><div><strong>8.4%</strong><span>Avg. weekly premium</span></div><div><strong>100%</strong><span>Non-custodial</span></div><div><strong>3</strong><span>xStock vaults</span></div>
+        <div><strong>$2.4M</strong><span>Collateralized TVL</span></div><div><strong>31.2%</strong><span>Avg. rolling APY</span></div><div><strong>Auto</strong><span>Rollover mode</span></div><div><strong>Hermes</strong><span>Keeper oracle</span></div>
       </section>
 
       <section className={styles.section} id="how-it-works">
-        <div className={styles.sectionIntro}><div><span className={styles.sectionKicker}>THE HARVEST CYCLE</span><h2>One week.<br />One simple strategy.</h2></div><p>Harvest automates the covered-call strategy so your xStocks can generate income without leaving your wallet.</p></div>
-        <div className={styles.steps}><div className={styles.step}><span>01</span><h3>Deposit</h3><p>Choose an xStock vault and deposit your tokens. You stay in control, always.</p></div><div className={styles.step}><span>02</span><h3>Harvest</h3><p>Harvest sets a fixed, out-of-the-money strike and collects a weekly premium.</p></div><div className={styles.step}><span>03</span><h3>Settle</h3><p>At expiry, receive your xStock back plus premium—or cash settlement if exercised.</p></div></div>
+        <div className={styles.sectionIntro}><div><span className={styles.sectionKicker}>01 DEPOSIT / 02 LOCK / 03 SETTLE / 04 CLAIM</span><h2>How it works</h2></div><p>Six instructions. Weekly cycle. Keeper plus Pyth Hermes off-chain, settlement on-chain.</p></div>
+        <div className={styles.steps}><div className={styles.step}><span>01</span><h3>Deposit</h3><p>Min 1.0 xStock. Creates a UserPosition PDA while the vault is accepting deposits.</p></div><div className={styles.step}><span>02</span><h3>Lock</h3><p>Keeper locks an out-of-the-money strike using the Pyth Hermes price feed.</p></div><div className={styles.step}><span>03</span><h3>Settle</h3><p>OTM keeps your xStock. ITM settles pro-rata USDC proceeds plus premium.</p></div></div>
       </section>
 
       <section className={styles.vaultSection} id="vaults">
         <div className={styles.sectionIntro}>
-          <div><span className={styles.sectionKicker}>OPEN VAULTS</span><h2>Find your harvest.</h2></div>
+          <div><span className={styles.sectionKicker}>VAULTS // SPL-2022 · 8DP</span><h2>Active vaults</h2></div>
           <a href="#vaults" className={styles.viewAll}>View all vaults <span>→</span></a>
         </div>
         <div className={styles.vaultGrid}>
@@ -152,7 +152,7 @@ export default function Home() {
 
       <footer className={styles.footer}>
         <a href="#top" className={styles.brand}><span className={styles.brandMark}>H</span><span>harvest</span></a>
-        <span>Weekly income for xStocks.</span>
+        <span>Programmable yield for tokenized equities.</span>
         <span className={styles.footerRight}>A Stocklana hackathon project · Built on Solana</span>
       </footer>
 
