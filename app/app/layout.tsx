@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import SolanaWalletProvider from "./components/WalletProvider";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -9,13 +10,13 @@ const geistSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Harvest — Covered-Call Yield on Solana",
+  title: "Harvest — Weekly Yield on xStocks",
   description:
-    "Automated covered-call yield vaults for tokenized equities on Solana.",
+    "Hold your xStocks. Earn weekly USDC yield. Non-custodial covered-call vaults on Solana.",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#12130f",
+  themeColor: "#151515",
 };
 
 export default function RootLayout({
@@ -25,7 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={geistSans.variable}>{children}</body>
+      <body className={geistSans.variable}>
+        <SolanaWalletProvider>{children}</SolanaWalletProvider>
+      </body>
     </html>
   );
 }
