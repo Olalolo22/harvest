@@ -123,6 +123,18 @@ export default function PortfolioDrawer({ isOpen, onClose, onOpenDeposit, onOpen
         }
       }
 
+      // Also merge any session positions from localStorage
+      try {
+        const localPos: Position[] = JSON.parse(localStorage.getItem(`harvest_positions_${publicKey.toBase58()}`) || "[]");
+        localPos.forEach((p) => {
+          if (!foundPositions.some((fp) => fp.symbol === p.symbol && fp.cycle === p.cycle)) {
+            foundPositions.push(p);
+          }
+        });
+      } catch {
+        // ignore
+      }
+
       setPositions(foundPositions);
     } catch (e) {
       console.warn("Error fetching portfolio:", e);

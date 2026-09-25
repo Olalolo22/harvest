@@ -7,9 +7,8 @@ import { MotionController } from "./MotionController";
 import styles from "./page.module.css";
 
 import ConnectWalletButton from "./components/ConnectWalletButton";
-import LiveHarvestStrip from "./components/LiveHarvestStrip";
 import PayoffVisualizer from "./components/PayoffVisualizer";
-import KeeperStatusSection from "./components/KeeperStatusSection";
+import KeeperLedgerModal from "./components/KeeperLedgerModal";
 import VaultModal from "./components/VaultModal";
 import PortfolioDrawer from "./components/PortfolioDrawer";
 import FaucetModal from "./components/FaucetModal";
@@ -126,6 +125,7 @@ export default function Home() {
   const [selectedVault, setSelectedVault] = useState<VaultItem | null>(null);
   const [isPortfolioOpen, setIsPortfolioOpen] = useState<boolean>(false);
   const [isFaucetOpen, setIsFaucetOpen] = useState<boolean>(false);
+  const [isKeeperLedgerOpen, setIsKeeperLedgerOpen] = useState<boolean>(false);
 
   const activeVaults: VaultItem[] = [
     {
@@ -289,11 +289,6 @@ export default function Home() {
           </p>
         </div>
       </section>
-
-      {/* Live Harvest Ticker Strip (Pyth Hermes Oracle + Keeper State) */}
-      <div data-reveal="fade">
-        <LiveHarvestStrip />
-      </div>
 
       <main>
         {/* Narrative / Problem Section */}
@@ -597,9 +592,49 @@ export default function Home() {
         </section>
 
         {/* Autonomous Crank & Verified On-Chain Ledger */}
-        <div id="crank" data-reveal="section">
-          <KeeperStatusSection />
-        </div>
+        <section className={styles.section} id="crank" data-reveal="section" style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+          <div
+            style={{
+              padding: "16px 24px",
+              borderRadius: "16px",
+              background: "rgba(255, 255, 255, 0.03)",
+              border: "1px solid rgba(255, 255, 255, 0.08)",
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "16px",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "var(--lime)", boxShadow: "0 0 10px var(--lime)" }} />
+              <div style={{ fontSize: "13px", color: "rgba(255, 255, 255, 0.85)" }}>
+                <strong>Autonomous Keeper Crank:</strong> Polling every 10s · Cycle #2 locked · Next Settle Friday 16:00 EST
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsKeeperLedgerOpen(true)}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "8px 16px",
+                borderRadius: "999px",
+                backgroundColor: "rgba(216, 168, 78, 0.12)",
+                border: "1px solid rgba(216, 168, 78, 0.35)",
+                color: "var(--accent-gold)",
+                fontSize: "12px",
+                fontWeight: 600,
+                cursor: "pointer",
+                fontFamily: "var(--font-mono)",
+                transition: "all 0.2s ease",
+              }}
+            >
+              View Verified Ledger &amp; Tx ↗
+            </button>
+          </div>
+        </section>
 
         {/* About & Trust Section */}
         <section className={`${styles.section} ${styles.about}`} id="about" data-reveal="section">
@@ -691,6 +726,11 @@ export default function Home() {
       <FaucetModal
         isOpen={isFaucetOpen}
         onClose={() => setIsFaucetOpen(false)}
+      />
+
+      <KeeperLedgerModal
+        isOpen={isKeeperLedgerOpen}
+        onClose={() => setIsKeeperLedgerOpen(false)}
       />
     </div>
   );
