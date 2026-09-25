@@ -102,6 +102,26 @@ Harvest includes an automated off-chain keeper service in [`scripts/keeper.ts`](
 
 ---
 
+## ⚖️ V1 Architecture Trade-Offs & Production Roadmap
+
+In the spirit of rigorous Solana protocol engineering (the Colosseum hackathon standard), Harvest V1 deliberately prioritizes **deterministic non-custodial custody, Token-2022 safety, and compute-budget predictability** over premature complexity. 
+
+We explicitly document our V1 MVP engineering trade-offs and our production V2 roadmap:
+
+| Component | V1 Hackathon Implementation | V2 Production Roadmap | Engineering & Compute Rationale |
+| :--- | :--- | :--- | :--- |
+| **Premium Sourcing** | Protocol Vault Reserve | Institutional RFQ / Dutch Auction | Avoided introducing external counterparty dependencies in V1; proved deterministic proportional claim math and non-custodial PDA accounting first. In V2, institutional market makers buy the call option payoff rights upfront via RFQ. |
+| **ITM Swap Execution** | Keeper via Jupiter Aggregator API | On-Chain Jupiter CPI (Direct Route) | Complex Jupiter multi-hop routing requires 30+ remaining accounts, pushing transactions near Solana's 1232-byte MTU limit. Delegating routing to the keeper keeps on-chain execution within predictable compute unit limits. |
+| **Oracle Pricing** | Pyth Hermes off-chain pull passed via Keeper | Pyth Pull Oracle On-Chain CPI | Keeps transaction compute units minimal while maintaining cryptographic signature verification of Hermes price payloads on-chain. |
+| **Position Valuation** | Deterministic lazy evaluation at settlement | Batch-indexed lock-time valuation | Iterating and writing to hundreds of individual `UserPosition` PDAs during `lock_cycle` would exceed block compute limits. Lazy valuation at claim time ensures $O(1)$ constant-time compute per transaction. |
+
+### 🔒 Trust Model & Security Assumptions
+- **Non-Custodial Guarantee:** User collateral is held in Program Derived Addresses (PDAs) owned exclusively by the Harvest smart contract. The keeper has zero authority to withdraw underlying xStocks or redirect funds to unauthorized wallets.
+- **Permissionless Settlement:** While an autonomous keeper cranks cycle transitions, the Anchor instructions (`settle_otm`, `settle_itm`, `claim`) are permissionless once the cycle expiry timestamp passes. Anyone can crank the vault if the keeper is offline.
+- **Safe Math:** All calculations use checked 128-bit arithmetic (`math.rs`) preventing integer overflow/underflow, with explicit precision normalization between 8-decimal Token-2022 xStocks and 6-decimal USDC.
+
+---
+
 ## 🚀 Quick Start
 
 ### 1. Prerequisites
