@@ -1,4 +1,4 @@
-# Harvest
+# 🌾 Harvest
 
 > **Automated Covered-Call Yield Vaults for Tokenized Equities on Solana**
 

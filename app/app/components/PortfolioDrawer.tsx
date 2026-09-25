@@ -501,13 +501,7 @@ export default function PortfolioDrawer({ isOpen, onClose, onOpenDeposit, onOpen
               marginBottom: "28px",
             }}
           >
-            <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px", opacity: 0.6 }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-                <line x1="12" y1="22.08" x2="12" y2="12" />
-              </svg>
-            </div>
+            <div style={{ fontSize: "28px", marginBottom: "8px" }}>🌾</div>
             <div style={{ fontSize: "14px", fontWeight: 600, marginBottom: "4px" }}>
               No active deposits found
             </div>
