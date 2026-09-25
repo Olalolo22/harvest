@@ -71,12 +71,12 @@ export default function Home() {
           </div>
         </header>
         <div className={styles.heroContent}>
-          <p className={styles.eyebrow} data-reveal="load">Solana <span /> Tokenized equities <span /> Covered calls</p>
+          <p className={styles.eyebrow} data-reveal="load">xStocks on Solana <span /> Weekly USDC yield <span /> Non-custodial</p>
           <h1 id="hero-title" data-reveal="load-stagger">
-            <span>Put</span> <span>your</span> <span>assets</span><br />
-            <span>to</span> <span>work</span>
+            <span>Hold</span> <span>your</span> <span>xStocks.</span><br />
+            <span>Earn</span> <span>weekly</span> <span>yield.</span>
           </h1>
-          <p className={styles.heroCopy} data-reveal="load-body">Automated covered-call yield, built for tokenized equities on Solana.</p>
+          <p className={styles.heroCopy} data-reveal="load-body">Every Friday, Harvest pays you USDC premium for holding xNVDA, xAAPL, or xTSLA — without selling a single share.</p>
           <div className={styles.heroActions} data-reveal="load-buttons">
             <a className={styles.primaryCta} href="#how-it-works">Explore vaults</a>
             <a className={styles.secondaryCta} href="#protocol">Read the protocol</a>
@@ -216,7 +216,7 @@ export default function Home() {
 
       <footer className={styles.footer} data-reveal="footer">
         <a className={styles.brand} href="#top"><HarvestMark /><span>Harvest</span></a>
-        <p>Automated covered-call yield on Solana.</p>
+        <p>Hold your xStocks. Earn weekly USDC yield. Never sell.</p>
         <div className={styles.footerLinks}>
           <a href="https://github.com/Olalolo22/harvest" target="_blank" rel="noreferrer">GitHub <Arrow /></a>
           <a href="#top">Back to top ↑</a>
