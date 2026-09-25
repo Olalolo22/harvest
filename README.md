@@ -66,6 +66,12 @@ Harvest is natively engineered for **SPL Token-2022** and thoroughly verified ag
 
 > **Key Architecture Note:** All xStocks feature 8 decimals and zero-overhead transfer hooks (inactive program ID), ensuring standard `TransferChecked` instructions without extra compute budget penalties or multi-account lookup overhead.
 
+### 🔮 Pyth Hermes Low-Latency Equity Feeds
+Harvest integrates official 64-byte Pyth Network Hermes equity feeds:
+- **NVDA / USD**: `b1073854ed24cbc755dc527418f52b7d271f6cc967bbf8d8129112b18860a593`
+- **AAPL / USD**: `49f6b65cb1de6b10eaf75e7c03ca029c306d0357e91b5311b175084a5ad55688`
+- **TSLA / USD**: `16dad506d7db8da01c87581c87ca897a012a153557d4d578c3b9c9e1bc0632f1`
+
 ---
 
 ## 🏛️ Program Architecture
@@ -94,13 +100,29 @@ programs/harvest/src/
 
 ---
 
-## 🤖 Automated Keeper Bot
+## 🤖 Automated Keeper Bot (`scripts/keeper.ts`)
 
-Harvest includes an automated off-chain keeper service in [`scripts/keeper.ts`](scripts/keeper.ts) that handles lifecycle automation:
-- Continuously polls vault state and time windows.
-- Fetches real-time equity spot prices from Pyth Hermes endpoints.
-- Automatically transitions cycles: `AcceptingDeposits` ➔ `lock_cycle` ➔ `settle_otm` / `settle_itm`.
-- Supports rapid 5-minute cycle demo mode (`CYCLE_DEMO=true`) for hackathon evaluations.
+Harvest includes an industrial off-chain crank daemon designed for continuous autonomous execution:
+
+```bash
+# Run continuous autonomous polling daemon:
+npx tsx scripts/keeper.ts
+
+# Execute a single cycle audit pass:
+RUN_ONCE=true npx tsx scripts/keeper.ts
+
+# Accelerated Demo Mode for Judge Testing (30s lock delay):
+LOCK_DELAY=30 CYCLE_DEMO=true npx tsx scripts/keeper.ts
+```
+
+### Keeper Logic Pipeline:
+1. **State Polling**: Checks `VaultConfig` account states on Solana Devnet every 10 seconds.
+2. **Oracle Pull**: Fetches real-time equity spot prices from Pyth Hermes API with zero on-chain CPI latency.
+3. **Lock Trigger**: Once the deposit window closes, invokes `lock_cycle` to snapshot spot price and lock strike $K$.
+4. **Settlement Evaluation**: When `clock.unix_timestamp >= settle_after`, queries final settlement price:
+   - If $S_T < K$: Fires `settle_otm` transaction.
+   - If $S_T \ge K$: Executes DEX swap routing via Jupiter API and fires `settle_itm` with USDC proceeds.
+5. **Permissionless Fail-Safe**: Any external third party can crank `settle_otm` if the official keeper is delayed.
 
 ---
 
@@ -121,6 +143,32 @@ We explicitly document our V1 MVP engineering trade-offs and our production V2 r
 - **Non-Custodial Guarantee:** User collateral is held in Program Derived Addresses (PDAs) owned exclusively by the Harvest smart contract. The keeper has zero authority to withdraw underlying xStocks or redirect funds to unauthorized wallets.
 - **Permissionless Settlement:** While an autonomous keeper cranks cycle transitions, the Anchor instructions (`settle_otm`, `settle_itm`, `claim`) are permissionless once the cycle expiry timestamp passes. Anyone can crank the vault if the keeper is offline.
 - **Safe Math:** All calculations use checked 128-bit arithmetic (`math.rs`) preventing integer overflow/underflow, with explicit precision normalization between 8-decimal Token-2022 xStocks and 6-decimal USDC.
+
+---
+
+## 🧑‍⚖️ Judge Walkthrough & 3-Minute Testing Guide
+
+Follow these steps to experience the complete live Harvest lifecycle:
+
+1. **Launch Live App or Local Dashboard**:
+   - Access the live deployed application at [harvest-lemon.vercel.app](https://harvest-lemon.vercel.app/) or run locally:
+     ```bash
+     cd app && npm install && npm run dev
+     ```
+2. **Connect Solana Devnet Wallet**:
+   - Connect Phantom, Solflare, or Backpack set to **Solana Devnet**.
+3. **1-Click Test Faucet Helper**:
+   - Click the gold **"Faucet ↗"** button in the top navigation bar.
+   - Click **"Claim 10.0 xNVDA Test Collateral"** to instantly fund your wallet with test Token-2022 assets. (Optional: click *Create On-Chain ATA on Devnet* and *Request 1 Devnet SOL* for full on-chain verification).
+4. **Deposit with Dynamic Strike Selection**:
+   - Click into the **xNVDA Covered Call** vault.
+   - Toggle between **Conservative (+4% OTM)**, **Balanced (+8% OTM)**, or **Aggressive (+12% OTM)** to see the locked strike and USDC yield update dynamically.
+   - Confirm the deposit: 1 share is committed to the Token-2022 vault PDA, reserving the weekly USDC premium payout.
+5. **Interactive Payoff Visualizer**:
+   - Drag the interactive price slider on the landing page between $180 and $260 to inspect both settlement branches (OTM keep shares + premium vs ITM strike conversion into USDC).
+6. **Portfolio & On-Chain Audit**:
+   - Click **"Portfolio"** in the navigation bar to slide open your position drawer, displaying live position PDA state and accrued weekly USDC premiums.
+   - Click **"View Verified Ledger & Tx ↗"** on the Crank bar to inspect settled cycles and verified transaction links on Solana Explorer.
 
 ---
 
