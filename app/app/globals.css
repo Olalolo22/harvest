@@ -1,24 +1,20 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #12130f;
+  --foreground: #fff;
 }
 
 html,
 body {
+  width: 100%;
   max-width: 100vw;
-  overflow-x: hidden;
+  min-height: 100%;
+  overflow-x: visible;
+  background: var(--background);
 }
 
 body {
+  margin: 0;
   color: var(--foreground);
-  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -35,8 +31,12 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  color: #12130f;
+  background: #dfff91;
 }
