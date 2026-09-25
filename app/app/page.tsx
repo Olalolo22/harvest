@@ -134,7 +134,7 @@ export default function Home() {
             <h2 className={styles.sectionHeading}>A defined strategy.<br /><em>A recorded outcome.</em></h2>
           </div>
           <div className={styles.introCopy} data-reveal="body">
-            <p>Harvest defines the strategy before the position is opened. A keeper sets an out-of-the-money strike, records it on-chain, and locks the premium — so the cycle stays legible while it runs and settled when it ends. Every deposit knows its strike, its expiry, and the claim that follows.</p>
+            <p>Deposit xNVDA, xAAPL, or xTSLA, and a keeper sets the strike each week — you never sell a share. The premium comes back in USDC every Friday, and at expiry the result is recorded on-chain: your xStocks back, or USDC for the position. You know which one before you claim.</p>
             <a className={styles.textLink} href="#how-it-works">See how the cycle works <Arrow /></a>
           </div>
         </section>
