@@ -304,7 +304,16 @@ export default function VaultModal({ vault, onClose, onOpenFaucet }: VaultModalP
               fontFamily: "var(--font-mono)", fontSize: "11px", letterSpacing: "0.12em",
               color: vault.color, textTransform: "uppercase", display: "block", marginBottom: "4px",
             }}>
-              {vault.status === "Active" ? "🟢 ACTIVE VAULT" : "⬜ OPEN VAULT"}
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                <span style={{
+                  width: "7px",
+                  height: "7px",
+                  borderRadius: "50%",
+                  backgroundColor: vault.status === "Active" ? "var(--accent-green)" : "var(--text-muted)",
+                  display: "inline-block",
+                }} />
+                {vault.status === "Active" ? "ACTIVE VAULT" : "OPEN VAULT"}
+              </span>
             </span>
             <h2 style={{ fontSize: "22px", fontWeight: 700, letterSpacing: "-0.03em", margin: 0 }}>
               {vault.symbol} · {vault.name}
@@ -489,7 +498,14 @@ export default function VaultModal({ vault, onClose, onOpenFaucet }: VaultModalP
             backgroundColor: "rgba(220, 53, 69, 0.08)", border: "1px solid rgba(220, 53, 69, 0.2)",
             fontSize: "13px", color: "#dc3545",
           }}>
-            ⚠️ {errorMsg}
+            <div style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0, marginTop: "1px" }}>
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <span>{errorMsg}</span>
+            </div>
           </div>
         )}
 
@@ -500,7 +516,12 @@ export default function VaultModal({ vault, onClose, onOpenFaucet }: VaultModalP
             backgroundColor: "rgba(108, 156, 66, 0.1)", border: "1px solid rgba(108, 156, 66, 0.25)",
             fontSize: "13px", color: "var(--accent-green)",
           }}>
-            ✅ <strong>Transaction confirmed!</strong>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M20 6L9 17l-5-5" />
+              </svg>
+              <strong>Transaction confirmed!</strong>
+            </div>
             <div style={{ marginTop: "6px" }}>
               <a
                 href={`https://explorer.solana.com/tx/${txSignature}?cluster=devnet`}

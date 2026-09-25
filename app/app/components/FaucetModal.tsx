@@ -437,7 +437,12 @@ export default function FaucetModal({ isOpen, onClose, onSuccess }: FaucetModalP
                   marginBottom: "14px",
                 }}
               >
-                ✅ {claimSuccess}
+                <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <span>{claimSuccess}</span>
+                </div>
               </div>
             )}
 
@@ -462,11 +467,12 @@ export default function FaucetModal({ isOpen, onClose, onSuccess }: FaucetModalP
               >
                 {loadingAta ? "Submitting on Devnet..." : "Create On-Chain ATA on Devnet"}
               </button>
-              {ataSuccess && (
-                <div style={{ fontSize: "11px", color: "var(--accent-green)", marginTop: "6px" }}>
-                  ✅ Devnet ATA verified on-chain.
+                <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "11px", color: "var(--accent-green)", marginTop: "6px" }}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <span>Devnet ATA verified on-chain.</span>
                 </div>
-              )}
             </div>
           </div>
         )}
@@ -529,8 +535,13 @@ export default function FaucetModal({ isOpen, onClose, onSuccess }: FaucetModalP
                   marginBottom: "16px",
                 }}
               >
-                ✅ <strong>1 SOL airdropped!</strong>
-                <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <strong>1 SOL airdropped!</strong>
+                </div>
+                <div style={{ marginTop: "4px" }}>
                   <a
                     href={`https://explorer.solana.com/tx/${solTxSig}?cluster=devnet`}
                     target="_blank"
@@ -556,7 +567,14 @@ export default function FaucetModal({ isOpen, onClose, onSuccess }: FaucetModalP
                   lineHeight: 1.4,
                 }}
               >
-                ⚠️ {solError}
+                <div style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0, marginTop: "1px" }}>
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span>{solError}</span>
+                </div>
                 <div style={{ marginTop: "8px", display: "flex", gap: "8px", flexWrap: "wrap" }}>
                   <a
                     href="https://faucet.solana.com"

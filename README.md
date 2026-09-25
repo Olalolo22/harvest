@@ -1,4 +1,4 @@
-# 🌾 Harvest
+# Harvest
 
 > **Automated Covered-Call Yield Vaults for Tokenized Equities on Solana**
 
@@ -6,7 +6,7 @@ Harvest brings programmatic yield generation to tokenized US equities on Solana.
 
 ---
 
-## 💡 The Opportunity
+## The Opportunity
 
 Tokenized stocks on Solana have exploded in adoption, yet they suffer from a major limitation compared to traditional equities: **there are virtually zero yield-bearing primitives available for them.**
 - Idle tokenized shares sit in wallets earning **0% APY**.
@@ -17,7 +17,7 @@ Tokenized stocks on Solana have exploded in adoption, yet they suffer from a maj
 
 ---
 
-## ⚡ How It Works
+## How It Works
 
 ```mermaid
 flowchart TD
@@ -53,7 +53,7 @@ At the end of the option cycle (e.g. 7 days, or 5 minutes in demo mode):
 
 ---
 
-## 🛡️ Token-2022 & Mainnet Asset Matrix
+## Token-2022 & Mainnet Asset Matrix
 
 Harvest is natively engineered for **SPL Token-2022** and thoroughly verified against live mainnet token configurations:
 
@@ -66,7 +66,7 @@ Harvest is natively engineered for **SPL Token-2022** and thoroughly verified ag
 
 > **Key Architecture Note:** All xStocks feature 8 decimals and zero-overhead transfer hooks (inactive program ID), ensuring standard `TransferChecked` instructions without extra compute budget penalties or multi-account lookup overhead.
 
-### 🔮 Pyth Hermes Low-Latency Equity Feeds
+### Pyth Hermes Low-Latency Equity Feeds
 Harvest integrates official 64-byte Pyth Network Hermes equity feeds:
 - **NVDA / USD**: `b1073854ed24cbc755dc527418f52b7d271f6cc967bbf8d8129112b18860a593`
 - **AAPL / USD**: `49f6b65cb1de6b10eaf75e7c03ca029c306d0357e91b5311b175084a5ad55688`
@@ -74,7 +74,7 @@ Harvest integrates official 64-byte Pyth Network Hermes equity feeds:
 
 ---
 
-## 🏛️ Program Architecture
+## Program Architecture
 
 > For the comprehensive technical specification, mathematical options pricing models, and security threat matrix, see **[ARCHITECTURE.md](ARCHITECTURE.md)**.
 
@@ -100,7 +100,7 @@ programs/harvest/src/
 
 ---
 
-## 🤖 Automated Keeper Bot (`scripts/keeper.ts`)
+## Automated Keeper Bot (`scripts/keeper.ts`)
 
 Harvest includes an industrial off-chain crank daemon designed for continuous autonomous execution:
 
@@ -126,7 +126,7 @@ LOCK_DELAY=30 CYCLE_DEMO=true npx tsx scripts/keeper.ts
 
 ---
 
-## ⚖️ V1 Architecture Trade-Offs & Production Roadmap
+## V1 Architecture Trade-Offs & Production Roadmap
 
 In the spirit of rigorous Solana protocol engineering (the Colosseum hackathon standard), Harvest V1 deliberately prioritizes **deterministic non-custodial custody, Token-2022 safety, and compute-budget predictability** over premature complexity. 
 
@@ -139,14 +139,14 @@ We explicitly document our V1 MVP engineering trade-offs and our production V2 r
 | **Oracle Pricing** | Pyth Hermes off-chain pull passed via Keeper | Pyth Pull Oracle On-Chain CPI | Keeps transaction compute units minimal while maintaining cryptographic signature verification of Hermes price payloads on-chain. |
 | **Position Valuation** | Deterministic lazy evaluation at settlement | Batch-indexed lock-time valuation | Iterating and writing to hundreds of individual `UserPosition` PDAs during `lock_cycle` would exceed block compute limits. Lazy valuation at claim time ensures $O(1)$ constant-time compute per transaction. |
 
-### 🔒 Trust Model & Security Assumptions
+### Trust Model & Security Assumptions
 - **Non-Custodial Guarantee:** User collateral is held in Program Derived Addresses (PDAs) owned exclusively by the Harvest smart contract. The keeper has zero authority to withdraw underlying xStocks or redirect funds to unauthorized wallets.
 - **Permissionless Settlement:** While an autonomous keeper cranks cycle transitions, the Anchor instructions (`settle_otm`, `settle_itm`, `claim`) are permissionless once the cycle expiry timestamp passes. Anyone can crank the vault if the keeper is offline.
 - **Safe Math:** All calculations use checked 128-bit arithmetic (`math.rs`) preventing integer overflow/underflow, with explicit precision normalization between 8-decimal Token-2022 xStocks and 6-decimal USDC.
 
 ---
 
-## 🧑‍⚖️ Judge Walkthrough & 3-Minute Testing Guide
+## Judge Walkthrough & 3-Minute Testing Guide
 
 Follow these steps to experience the complete live Harvest lifecycle:
 
@@ -172,7 +172,7 @@ Follow these steps to experience the complete live Harvest lifecycle:
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Prerequisites
 - [Rust](https://rustup.rs/) (v1.75+)
@@ -213,5 +213,5 @@ npm run dev
 
 ---
 
-## 📜 License
+## License
 Apache-2.0
