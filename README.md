@@ -70,6 +70,8 @@ Harvest is natively engineered for **SPL Token-2022** and thoroughly verified ag
 
 ## 🏛️ Program Architecture
 
+> For the comprehensive technical specification, mathematical options pricing models, and security threat matrix, see **[ARCHITECTURE.md](ARCHITECTURE.md)**.
+
 ```
 programs/harvest/src/
 ├── lib.rs                   # Instruction routing and entrypoint
