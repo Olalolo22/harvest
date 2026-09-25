@@ -130,11 +130,11 @@ export default function Home() {
 
         <section className={`${styles.section} ${styles.intro}`} id="protocol" data-reveal="section">
           <div data-reveal="copy">
-            <p className={styles.eyebrow}>The opportunity</p>
-            <h2 className={styles.sectionHeading}>Equity exposure.<br /><em>With a pulse.</em></h2>
+            <p className={styles.eyebrow}>The solution</p>
+            <h2 className={styles.sectionHeading}>A defined strategy.<br /><em>A recorded outcome.</em></h2>
           </div>
           <div className={styles.introCopy} data-reveal="body">
-            <p>Tokenized stocks keep the familiarity of equity with the settlement properties of a blockchain. Harvest adds a productive layer: a covered-call cycle that turns idle holdings into recurring premium opportunities.</p>
+            <p>Deposit xNVDA, xAAPL, or xTSLA, and a keeper sets the strike each week — you never sell a share. The premium comes back in USDC every Friday, and at expiry the result is recorded on-chain: your xStocks back, or USDC for the position. You know which one before you claim.</p>
             <a className={styles.textLink} href="#how-it-works">See how the cycle works <Arrow /></a>
           </div>
         </section>
