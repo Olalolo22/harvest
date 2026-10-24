@@ -1,4 +1,6 @@
+use crate::constants::DEFAULT_MAX_SLIPPAGE_BPS;
 use crate::errors::HarvestError;
+use crate::math::compute_min_itm_proceeds;
 use crate::state::{CycleState, VaultConfig};
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Token, TokenAccount, Transfer};
@@ -40,6 +42,22 @@ pub fn handler(
         settlement_price >= vault.strike_price,
         HarvestError::NotItm
     );
+
+    // ITM Floor Check: Ensure keeper's USDC proceeds cover the required strike floor
+    // minus allowed maximum slippage (1.0% / 100 bps). Prevents keeper arbitrage/theft.
+    if vault.total_xstock_deposited > 0 {
+        let min_required_proceeds = compute_min_itm_proceeds(
+            vault.total_xstock_deposited,
+            vault.strike_price,
+            vault.xstock_decimals,
+            DEFAULT_MAX_SLIPPAGE_BPS,
+        )?;
+
+        require!(
+            usdc_proceeds >= min_required_proceeds,
+            HarvestError::InsufficientItmProceeds
+        );
+    }
 
     // Transfer USDC proceeds from keeper ATA → vault USDC ATA.
     // This uses regular SPL Token (USDC is not Token-2022).

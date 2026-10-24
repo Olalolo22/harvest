@@ -52,4 +52,10 @@ pub enum HarvestError {
 
     #[msg("Caller is not the vault authority")]
     Unauthorized,
+
+    #[msg("ITM USDC proceeds below minimum acceptable floor (strike price minus slippage)")]
+    InsufficientItmProceeds,
+
+    #[msg("Slippage parameter exceeds maximum allowed tolerance")]
+    InvalidSlippage,
 }

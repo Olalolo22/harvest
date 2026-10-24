@@ -22,6 +22,7 @@ pub fn handler(ctx: Context<LockCycle>, current_price: i64) -> Result<()> {
     let clock = Clock::get()?;
     let strike = compute_strike(current_price, vault.strike_offset_bps)?;
 
+    vault.lock_spot_price = current_price;
     vault.strike_price = strike;
     vault.cycle_locked_at = clock.unix_timestamp;
     vault.settle_after = clock
@@ -31,7 +32,7 @@ pub fn handler(ctx: Context<LockCycle>, current_price: i64) -> Result<()> {
     vault.cycle_state = CycleState::CycleLocked;
 
     msg!(
-        "Cycle locked: {} | cycle {} | current_price {} | strike {} | settles at {}",
+        "Cycle locked: {} | cycle {} | lock_spot_price {} | strike {} | settles at {}",
         vault.ticker_str(),
         vault.current_cycle,
         current_price,

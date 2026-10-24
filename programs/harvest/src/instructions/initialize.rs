@@ -41,6 +41,7 @@ pub fn handler(
     vault.current_cycle = 1;
     vault.cycle_state = CycleState::AcceptingDeposits;
     vault.strike_price = 0;
+    vault.lock_spot_price = 0;
     vault.settlement_price = 0;
     vault.was_otm = false;
     vault.itm_usdc_proceeds = 0;

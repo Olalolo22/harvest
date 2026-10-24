@@ -67,6 +67,11 @@ pub struct VaultConfig {
     /// 0 when vault is AcceptingDeposits.
     pub strike_price: i64,
 
+    /// Spot price of the underlying xStock at the exact moment lock_cycle was executed.
+    /// USD with 6 decimal precision (PRICE_PRECISION).
+    /// Enables deterministic O(1) covered-call options premium evaluation at claim time.
+    pub lock_spot_price: i64,
+
     /// Settlement price recorded at settle_otm/settle_itm time.
     /// 0 until settlement is complete.
     pub settlement_price: i64,
@@ -117,6 +122,7 @@ impl VaultConfig {
         + 8                       // current_cycle
         + 1                       // cycle_state (enum)
         + 8                       // strike_price
+        + 8                       // lock_spot_price
         + 8                       // settlement_price
         + 1                       // was_otm
         + 8                       // itm_usdc_proceeds

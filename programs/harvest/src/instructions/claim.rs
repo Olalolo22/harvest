@@ -35,10 +35,17 @@ pub fn handler(ctx: Context<Claim>) -> Result<()> {
     );
 
     // -------------------------------------------------------------------------
-    // Compute premium (lazy — uses settlement price if deposit_value_usd not set)
+    // Compute premium (deterministic O(1): uses lock_spot_price if set, else deposit_value_usd, else fallback)
     // -------------------------------------------------------------------------
     let effective_deposit_value = if position.deposit_value_usd > 0 {
         position.deposit_value_usd
+    } else if vault.lock_spot_price > 0 {
+        // True covered-call options pricing: premium based on locked spot price at the time the call was written
+        xstock_to_usd(
+            position.xstock_amount,
+            vault.lock_spot_price,
+            vault.xstock_decimals,
+        )?
     } else {
         // Fallback: estimate using settlement price and xstock_amount
         xstock_to_usd(
@@ -154,6 +161,7 @@ pub fn handler(ctx: Context<Claim>) -> Result<()> {
             .ok_or(error!(HarvestError::MathOverflow))?;
         vault.cycle_state = CycleState::AcceptingDeposits;
         vault.strike_price = 0;
+        vault.lock_spot_price = 0;
         vault.settlement_price = 0;
         vault.was_otm = false;
         vault.itm_usdc_proceeds = 0;

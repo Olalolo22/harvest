@@ -18,6 +18,13 @@ pub const PRICE_PRECISION: u64 = 1_000_000;
 /// Basis points divisor.
 pub const BPS_DIVISOR: u64 = 10_000;
 
+/// Default maximum allowable slippage on ITM liquidity conversion (1.0% = 100 bps).
+/// Protects depositors from keeper arbitrage or sub-par DEX routing on ITM settlements.
+pub const DEFAULT_MAX_SLIPPAGE_BPS: u16 = 100;
+
+/// Hard ceiling for allowable slippage tolerance (5.0% = 500 bps).
+pub const MAX_ALLOWED_SLIPPAGE_BPS: u16 = 500;
+
 // ---------------------------------------------------------------------------
 // xStock mint addresses (verified Sep 15 2026 via spl-token display mainnet)
 // All are Token-2022 mints with 8 decimals.
