@@ -132,6 +132,8 @@ In the spirit of rigorous Solana protocol engineering (the Colosseum hackathon s
 
 We explicitly document our V1 MVP engineering trade-offs and our production V2 roadmap:
 
+> 📘 **Deep Protocol Audit & Post-Mortem:** For an exhaustive post-mortem teardown of V1 financial architecture, trust model boundaries, and the institutional V2 solver/RFQ specification, see [`docs/FINANCIAL_ARCHITECTURE_POSTMORTEM.md`](docs/FINANCIAL_ARCHITECTURE_POSTMORTEM.md).
+
 | Component | V1 Hackathon Implementation | V2 Production Roadmap | Engineering & Compute Rationale |
 | :--- | :--- | :--- | :--- |
 | **Premium Sourcing** | Protocol Vault Reserve | Institutional RFQ / Dutch Auction | Avoided introducing external counterparty dependencies in V1; proved deterministic proportional claim math and non-custodial PDA accounting first. In V2, institutional market makers buy the call option payoff rights upfront via RFQ. |
